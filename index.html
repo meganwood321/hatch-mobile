@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hatch Research">
+    <link rel="apple-touch-icon" href="apple-touch-icon.svg">
+    <title>Hatch Research</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding: 16px;
+            padding-bottom: 40px;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 20px; padding-top: 8px; }
+        header h1 { font-size: 1.6em; color: #fff; margin-bottom: 2px; }
+        header p { color: #8892b0; font-size: 0.8em; }
+
+        .card {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .card h2 { font-size: 0.85em; color: #8892b0; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 12px; }
+
+        /* Search */
+        .search-row { display: flex; gap: 8px; }
+        .search-input {
+            flex: 1; padding: 13px 14px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff; font-size: 1em; text-transform: uppercase;
+        }
+        .search-input::placeholder { color: #556; text-transform: none; }
+        .search-input:focus { outline: none; border-color: #5dade2; }
+
+        button {
+            padding: 13px 18px; border: none; border-radius: 10px;
+            font-size: 0.9em; font-weight: 700; cursor: pointer;
+            transition: all 0.15s; -webkit-appearance: none;
+        }
+        button:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1); color: #e0e0e0;
+            border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px;
+            font-size: 0.8em;
+        }
+        .btn-sm { padding: 7px 12px; font-size: 0.78em; }
+
+        /* Key setup */
+        .key-hint { font-size: 0.78em; color: #8892b0; margin-top: 10px; line-height: 1.5; }
+        .key-hint a { color: #5dade2; }
+
+        /* Score badge */
+        .score-hero {
+            display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+        }
+        .score-circle {
+            width: 72px; height: 72px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 800; flex-shrink: 0;
+        }
+        .score-circle .num { font-size: 1.6em; line-height: 1; }
+        .score-circle .out { font-size: 0.65em; color: rgba(255,255,255,0.6); }
+        .score-high { background: rgba(46,204,113,0.25); border: 2px solid #2ecc71; color: #2ecc71; }
+        .score-med  { background: rgba(255,193,7,0.25);  border: 2px solid #ffc107; color: #ffc107; }
+        .score-low  { background: rgba(255,107,107,0.25);border: 2px solid #ff6b6b; color: #ff6b6b; }
+
+        .stock-header { flex: 1; min-width: 0; }
+        .stock-ticker { font-size: 1.4em; font-weight: 800; color: #5dade2; }
+        .stock-name { font-size: 0.85em; color: #ccc; margin-top: 2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .stock-meta { font-size: 0.75em; color: #8892b0; margin-top: 3px; }
+
+        /* Score breakdown bars */
+        .score-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .score-cat { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
+        .score-cat-label { font-size: 0.72em; color: #8892b0; margin-bottom: 5px; }
+        .score-cat-bar { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .score-cat-fill { height: 100%; border-radius: 3px; transition: width 0.6s; }
+        .score-cat-val { font-size: 0.8em; font-weight: 700; margin-top: 4px; }
+
+        /* Metrics grid */
+        .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .metric { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
+        .metric-label { font-size: 0.7em; color: #8892b0; margin-bottom: 3px; }
+        .metric-value { font-size: 0.95em; font-weight: 700; }
+        .good { color: #2ecc71; }
+        .bad  { color: #ff6b6b; }
+        .neutral { color: #ffc107; }
+        .muted { color: #667; }
+
+        /* Sentiment */
+        .sentiment-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 6px;
+            font-size: 0.75em; font-weight: 700; text-transform: uppercase;
+        }
+        .sentiment-bullish { background: rgba(46,204,113,0.2); color: #2ecc71; }
+        .sentiment-bearish { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .sentiment-neutral { background: rgba(255,193,7,0.2); color: #ffc107; }
+
+        /* News */
+        .article { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .article:last-child { border-bottom: none; padding-bottom: 0; }
+        .article-row { display: flex; gap: 10px; align-items: flex-start; }
+        .article-score {
+            min-width: 42px; padding: 3px 5px; border-radius: 5px;
+            font-size: 0.72em; font-weight: 700; text-align: center; margin-top: 1px;
+        }
+        .article-headline {
+            font-size: 0.88em; color: #5dade2; font-weight: 600;
+            text-decoration: none; display: block; line-height: 1.4;
+        }
+        .article-headline:active { opacity: 0.7; }
+        .article-meta { font-size: 0.72em; color: #667; margin-top: 3px; }
+        .article-summary { font-size: 0.78em; color: #8892b0; margin-top: 5px; line-height: 1.4; }
+
+        /* Empty / loading */
+        .empty { text-align: center; padding: 30px 20px; color: #667; }
+        .empty p { font-size: 0.9em; }
+
+        .spinner {
+            display: inline-block; width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: #5dade2;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            vertical-align: middle; margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading { text-align: center; padding: 20px; color: #8892b0; font-size: 0.9em; }
+
+        /* Section toggle */
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px;
+        }
+
+        /* Price row */
+        .price-row { display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 10px; }
+        .price-big { font-size: 1.5em; font-weight: 800; color: #fff; }
+        .price-sub { font-size: 0.78em; color: #8892b0; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: rgba(30,30,60,0.95); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; padding: 10px 20px; border-radius: 20px;
+            font-size: 0.85em; font-weight: 600; z-index: 999;
+            transition: transform 0.3s; white-space: nowrap;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Key modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            z-index: 500; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #1a1a2e; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px; padding: 24px; width: 100%; max-width: 380px;
+        }
+        .modal-box h3 { color: #fff; margin-bottom: 8px; }
+        .modal-box p { color: #8892b0; font-size: 0.85em; margin-bottom: 14px; line-height: 1.5; }
+        .modal-input {
+            width: 100%; padding: 12px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08); color: #fff; font-size: 0.95em;
+            margin-bottom: 12px;
+        }
+        .modal-input:focus { outline: none; border-color: #5dade2; }
+        .modal-row { display: flex; gap: 8px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Hatch Research</h1>
+        <p>Stock research · NASDAQ & NYSE</p>
+    </header>
+
+    <!-- Search -->
+    <div class="card">
+        <div class="search-row">
+            <input type="text" class="search-input" id="tickerInput"
+                   placeholder="Enter ticker, e.g. AAPL"
+                   maxlength="10"
+                   onkeydown="if(event.key==='Enter')search()">
+            <button class="btn-primary" onclick="search()" id="btnSearch">Go</button>
+        </div>
+        <div class="key-hint" id="keyHint" style="display:none">
+            ⚠️ Finnhub API key needed. <a href="#" onclick="showKeyModal();return false;">Set your key</a> — free at
+            <a href="https://finnhub.io" target="_blank">finnhub.io</a>
+        </div>
+    </div>
+
+    <!-- Results (hidden until searched) -->
+    <div id="results" style="display:none">
+
+        <!-- Stock overview -->
+        <div class="card" id="overviewCard">
+            <div class="loading"><div class="spinner"></div>Loading...</div>
+        </div>
+
+        <!-- Score breakdown -->
+        <div class="card" id="scoreCard" style="display:none">
+            <h2>Score Breakdown</h2>
+            <div class="score-cats" id="scoreCats"></div>
+        </div>
+
+        <!-- Key metrics -->
+        <div class="card" id="metricsCard" style="display:none">
+            <h2>Key Metrics</h2>
+            <div class="metrics" id="metricsGrid"></div>
+        </div>
+
+        <!-- News sentiment -->
+        <div class="card" id="newsCard" style="display:none">
+            <div class="section-header">
+                <h2 style="margin:0">News &amp; Sentiment</h2>
+                <span id="overallSentiment"></span>
+            </div>
+            <div id="articleList"></div>
+        </div>
+
+    </div>
+
+    <!-- No key state -->
+    <div id="noKeyState" style="display:none" class="card">
+        <div class="empty">
+            <p>Set your free Finnhub API key to get started.</p>
+            <br>
+            <button class="btn-primary" onclick="showKeyModal()">Set API Key</button>
+            <br><br>
+            <p style="font-size:0.78em">Get a free key at <a href="https://finnhub.io" target="_blank" style="color:#5dade2">finnhub.io</a></p>
+        </div>
+    </div>
+
+</div>
+
+<!-- API key modal -->
+<div class="modal-overlay" id="keyModal">
+    <div class="modal-box">
+        <h3>Finnhub API Key</h3>
+        <p>Enter your free Finnhub API key. Get one at <a href="https://finnhub.io" target="_blank" style="color:#5dade2">finnhub.io</a> — takes 30 seconds, no credit card.</p>
+        <input type="text" class="modal-input" id="keyInput" placeholder="e.g. d6iu1axxxxxxxx">
+        <div class="modal-row">
+            <button class="btn-primary" style="flex:1" onclick="saveKey()">Save</button>
+            <button class="btn-secondary" onclick="hideKeyModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Config ---------------------------------------------------------------
+const NEWS_DAYS = 14;
+const FINNHUB_BASE = 'https://finnhub.io/api/v1';
+
+// ---- Key management -------------------------------------------------------
+function getKey() { return localStorage.getItem('hatch_finnhub_key') || ''; }
+function saveKey() {
+    const k = document.getElementById('keyInput').value.trim();
+    if (!k) { showToast('Please enter a key'); return; }
+    localStorage.setItem('hatch_finnhub_key', k);
+    hideKeyModal();
+    document.getElementById('keyHint').style.display = 'none';
+    document.getElementById('noKeyState').style.display = 'none';
+    showToast('Key saved!');
+}
+function showKeyModal() {
+    document.getElementById('keyInput').value = getKey();
+    document.getElementById('keyModal').classList.add('show');
+}
+function hideKeyModal() { document.getElementById('keyModal').classList.remove('show'); }
+
+// ---- Finnhub API ----------------------------------------------------------
+async function finnhub(endpoint, params = {}) {
+    const key = getKey();
+    if (!key) throw new Error('No API key');
+    const qs = new URLSearchParams({ ...params, token: key });
+    const resp = await fetch(`${FINNHUB_BASE}${endpoint}?${qs}`);
+    if (!resp.ok) throw new Error(`API error ${resp.status}`);
+    return resp.json();
+}
+
+// ---- Scoring (mirrors Python app) ----------------------------------------
+function scoreStock(m, quote, recData, priceTarget) {
+    const scores = { business: 0, strength: 0, valuation: 0, sentiment: 0 };
+    const max    = { business: 35, strength: 20, valuation: 25, sentiment: 20 };
+
+    // -- Business Quality (35) --
+    // FCF margin (12)
+    const fcfMargin = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
+    if (fcfMargin != null) {
+        scores.business += fcfMargin > 0.20 ? 12 : fcfMargin > 0.10 ? 9 :
+                           fcfMargin > 0.05 ? 6  : fcfMargin > 0 ? 3 : 0;
+    }
+    // ROE (12)
+    const roe = m.roeTTM != null ? m.roeTTM / 100 : null;
+    if (roe != null) {
+        scores.business += roe > 0.25 ? 12 : roe > 0.15 ? 9 :
+                           roe > 0.10 ? 6  : roe > 0.05 ? 3 : 0;
+    }
+    // Revenue growth (8)
+    const revGrow = m.revenueGrowthTTMYoy != null ? m.revenueGrowthTTMYoy / 100 : null;
+    if (revGrow != null) {
+        scores.business += revGrow > 0.25 ? 8 : revGrow > 0.10 ? 6 :
+                           revGrow > 0.05 ? 4 : revGrow > 0 ? 2 : 0;
+    }
+    // Net margin (3)
+    const margin = m.netProfitMarginTTM != null ? m.netProfitMarginTTM / 100 : null;
+    if (margin != null) {
+        scores.business += margin > 0.20 ? 3 : margin > 0.10 ? 2 : margin > 0 ? 1 : 0;
+    }
+
+    // -- Financial Strength (20) --
+    // D/E (8)
+    const de = m.totalDebtToEquityAnnual;
+    if (de != null) {
+        scores.strength += de < 30 ? 8 : de < 60 ? 6 : de < 100 ? 4 : de < 200 ? 2 : 0;
+    }
+    // Current ratio (6)
+    const cr = m.currentRatioAnnual;
+    if (cr != null) {
+        scores.strength += cr > 2.0 ? 6 : cr > 1.5 ? 5 : cr > 1.0 ? 3 : cr > 0.8 ? 1 : 0;
+    }
+    // FCF positive (6)
+    const fcfPs = m.freeCashFlowPerShareTTM;
+    if (fcfPs != null) {
+        scores.strength += fcfPs > 0 ? 6 : 0;
+    }
+
+    // -- Valuation (25) --
+    // PEG (10)
+    const peg = m.pegNormalizedAnnual;
+    if (peg != null && peg > 0) {
+        scores.valuation += peg < 0.5 ? 10 : peg < 1.0 ? 8 : peg < 1.5 ? 5 : peg < 2.0 ? 3 : 0;
+    }
+    // Forward P/E → use normalized P/E as proxy (8)
+    const fpe = m.peNormalizedAnnual;
+    if (fpe != null && fpe > 0) {
+        scores.valuation += fpe < 10 ? 8 : fpe < 15 ? 6 : fpe < 20 ? 4 : fpe < 30 ? 2 : 0;
+    }
+    // P/B (4)
+    const pb = m.pbAnnual;
+    if (pb != null && pb > 0) {
+        scores.valuation += pb < 1.5 ? 4 : pb < 3.0 ? 3 : pb < 5.0 ? 2 : 0;
+    }
+    // P/E trailing (3)
+    const pe = m.peTTM;
+    if (pe != null && pe > 0) {
+        scores.valuation += pe < 12 ? 3 : pe < 18 ? 2 : pe < 25 ? 1 : 0;
+    }
+
+    // -- Market Sentiment (20) --
+    // Analyst buy % (8)
+    if (recData && recData.length) {
+        const r = recData[0];
+        const total = (r.strongBuy||0)+(r.buy||0)+(r.hold||0)+(r.sell||0)+(r.strongSell||0);
+        if (total > 0) {
+            const buyPct = ((r.strongBuy||0)+(r.buy||0)) / total;
+            scores.sentiment += buyPct > 0.70 ? 8 : buyPct > 0.50 ? 6 : buyPct > 0.30 ? 3 : 0;
+        }
+    }
+    // Price vs target (6)
+    if (priceTarget && priceTarget.targetMean && quote.c > 0) {
+        const upside = (priceTarget.targetMean - quote.c) / quote.c;
+        scores.sentiment += upside > 0.30 ? 6 : upside > 0.15 ? 4 :
+                            upside > 0.05 ? 2 : upside > 0 ? 1 : 0;
+    }
+    // 52-week position (6) — closer to low = better
+    if (quote.h && quote.l && quote.c) {
+        const pos = (quote.c - quote.l) / (quote.h - quote.l);
+        scores.sentiment += pos < 0.30 ? 6 : pos < 0.50 ? 4 : pos < 0.70 ? 2 : 0;
+    }
+
+    const total = scores.business + scores.strength + scores.valuation + scores.sentiment;
+    return { total, scores, max };
+}
+
+// ---- Sentiment (keyword-based) -------------------------------------------
+const BULLISH_WORDS = ['upgrade','outperform','buy','strong','growth','beat','surge','rally',
+    'bullish','record','positive','soar','profit','exceed','gain','optimistic','momentum',
+    'raised','raises','lifted','lifts','top pick','overweight'];
+const BEARISH_WORDS = ['downgrade','underperform','sell','weak','decline','miss','drop',
+    'fall','bearish','loss','negative','cut','risk','concern','warning','plunge','crash',
+    'lowered','lowers','reduced','reduces','underweight','below'];
+
+function sentimentScore(text) {
+    const t = text.toLowerCase();
+    const bull = BULLISH_WORDS.filter(w => t.includes(w)).length;
+    const bear = BEARISH_WORDS.filter(w => t.includes(w)).length;
+    const total = bull + bear;
+    if (!total) return { label: 'neutral', score: 0 };
+    const score = (bull - bear) / total;
+    return { label: score > 0.15 ? 'bullish' : score < -0.15 ? 'bearish' : 'neutral', score };
+}
+
+function isRelevant(ticker, name, headline, summary) {
+    const text = (headline + ' ' + (summary||'')).toLowerCase();
+    if (text.includes(ticker.toLowerCase())) return true;
+    if (name) {
+        const skip = new Set(['inc','corp','co','ltd','llc','plc','group','holdings',
+            'international','the','and','of','class','a','b','c']);
+        const words = name.toLowerCase().replace(/[,.']/g,'').split(/\s+/)
+            .filter(w => !skip.has(w) && w.length > 2);
+        if (words.slice(0,3).some(w => text.includes(w))) return true;
+    }
+    return false;
+}
+
+// ---- Main search ---------------------------------------------------------
+let currentTicker = '';
+
+async function search() {
+    const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+    if (!ticker) return;
+
+    const key = getKey();
+    if (!key) {
+        document.getElementById('keyHint').style.display = '';
+        document.getElementById('noKeyState').style.display = '';
+        showToast('Please set your Finnhub API key first');
+        return;
+    }
+
+    currentTicker = ticker;
+    document.getElementById('results').style.display = '';
+    document.getElementById('noKeyState').style.display = 'none';
+    document.getElementById('scoreCard').style.display = 'none';
+    document.getElementById('metricsCard').style.display = 'none';
+    document.getElementById('newsCard').style.display = 'none';
+    document.getElementById('overviewCard').innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+    const btn = document.getElementById('btnSearch');
+    btn.disabled = true;
+
+    try {
+        // Fetch all data in parallel
+        const [profile, quote, metrics, recs, target, news] = await Promise.allSettled([
+            finnhub('/stock/profile2', { symbol: ticker }),
+            finnhub('/quote', { symbol: ticker }),
+            finnhub('/stock/metric', { symbol: ticker, metric: 'all' }),
+            finnhub('/stock/recommendation', { symbol: ticker }),
+            finnhub('/price-target', { symbol: ticker }),
+            finnhub('/company-news', {
+                symbol: ticker,
+                from: dateStr(-NEWS_DAYS),
+                to: dateStr(0)
+            })
+        ]);
+
+        const p  = profile.value || {};
+        const q  = quote.value || {};
+        const m  = (metrics.value && metrics.value.metric) || {};
+        const r  = recs.value || [];
+        const pt = target.value || {};
+        const n  = news.value || [];
+
+        if (!p.name && !q.c) {
+            document.getElementById('overviewCard').innerHTML =
+                '<div class="empty"><p>Ticker not found or no data available.</p></div>';
+            return;
+        }
+
+        // Score
+        const scoreResult = scoreStock(m, q, r, pt);
+
+        // Render overview
+        renderOverview(ticker, p, q, scoreResult);
+
+        // Render score breakdown
+        renderScoreBreakdown(scoreResult);
+
+        // Render metrics
+        renderMetrics(m, q, r, pt);
+
+        // Render news
+        renderNews(ticker, p.name || '', n);
+
+    } catch (e) {
+        document.getElementById('overviewCard').innerHTML =
+            `<div class="empty"><p>Error: ${e.message}</p></div>`;
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ---- Render overview -------------------------------------------------------
+function renderOverview(ticker, p, q, scoreResult) {
+    const score = scoreResult.total;
+    const cls = score >= 60 ? 'score-high' : score >= 35 ? 'score-med' : 'score-low';
+    const mcap = fmtBig(p.marketCapitalization ? p.marketCapitalization * 1e6 : null);
+    const change = q.dp != null ? (q.dp >= 0 ? '+' : '') + q.dp.toFixed(2) + '%' : '';
+    const changeColor = q.dp >= 0 ? '#2ecc71' : '#ff6b6b';
+
+    document.getElementById('overviewCard').innerHTML = `
+        <div class="score-hero">
+            <div class="score-circle ${cls}">
+                <span class="num">${score}</span>
+                <span class="out">/100</span>
+            </div>
+            <div class="stock-header">
+                <div class="stock-ticker">${ticker}</div>
+                <div class="stock-name">${p.name || '-'}</div>
+                <div class="stock-meta">${p.exchange || ''} · ${p.finnhubIndustry || p.sector || ''}</div>
+            </div>
+        </div>
+        <div class="price-row">
+            <span class="price-big">$${q.c != null ? fmtNum(q.c) : '-'}</span>
+            <span class="price-sub" style="color:${changeColor}">${change}
+                <span style="color:#8892b0"> · 52wk $${fmtNum(q.l)}–$${fmtNum(q.h)}</span>
+            </span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <span style="font-size:0.78em; color:#8892b0">Mkt Cap: ${mcap}</span>
+            ${pt.targetMean ? `<span style="font-size:0.78em; color:#8892b0">Target: $${fmtNum(pt.targetMean)}</span>` : ''}
+            ${p.country ? `<span style="font-size:0.78em; color:#8892b0">${p.country}</span>` : ''}
+        </div>
+    `;
+}
+
+// ---- Render score breakdown ------------------------------------------------
+function renderScoreBreakdown(scoreResult) {
+    const { scores, max } = scoreResult;
+    const cats = [
+        { key: 'business', label: 'Business Quality', color: '#5dade2' },
+        { key: 'strength', label: 'Financial Strength', color: '#2ecc71' },
+        { key: 'valuation', label: 'Valuation', color: '#ffc107' },
+        { key: 'sentiment', label: 'Analyst Sentiment', color: '#e67e22' },
+    ];
+    let html = '';
+    for (const c of cats) {
+        const pct = max[c.key] > 0 ? (scores[c.key] / max[c.key] * 100) : 0;
+        html += `<div class="score-cat">
+            <div class="score-cat-label">${c.label}</div>
+            <div class="score-cat-bar">
+                <div class="score-cat-fill" style="width:${pct}%;background:${c.color}"></div>
+            </div>
+            <div class="score-cat-val" style="color:${c.color}">${scores[c.key]}/${max[c.key]}</div>
+        </div>`;
+    }
+    document.getElementById('scoreCats').innerHTML = html;
+    document.getElementById('scoreCard').style.display = '';
+}
+
+// ---- Render metrics --------------------------------------------------------
+function renderMetrics(m, q, r, pt) {
+    const upside = pt.targetMean && q.c ? ((pt.targetMean - q.c) / q.c * 100) : null;
+    let buyPct = null;
+    if (r && r.length) {
+        const rec = r[0];
+        const t = (rec.strongBuy||0)+(rec.buy||0)+(rec.hold||0)+(rec.sell||0)+(rec.strongSell||0);
+        if (t > 0) buyPct = ((rec.strongBuy||0)+(rec.buy||0)) / t * 100;
+    }
+
+    const items = [
+        { label: 'ROE', val: m.roeTTM != null ? fmtPct(m.roeTTM/100) : null,
+          color: colorHigh(m.roeTTM, 15, 5) },
+        { label: 'Revenue Growth', val: m.revenueGrowthTTMYoy != null ? fmtPct(m.revenueGrowthTTMYoy/100) : null,
+          color: colorHigh(m.revenueGrowthTTMYoy, 10, 0) },
+        { label: 'Net Margin', val: m.netProfitMarginTTM != null ? fmtPct(m.netProfitMarginTTM/100) : null,
+          color: colorHigh(m.netProfitMarginTTM, 15, 0) },
+        { label: 'FCF Margin', val: m.fcfMarginTTM != null ? fmtPct(m.fcfMarginTTM/100) : null,
+          color: colorHigh(m.fcfMarginTTM, 10, 0) },
+        { label: 'Debt / Equity', val: m.totalDebtToEquityAnnual != null ? fmtNum(m.totalDebtToEquityAnnual,0) : null,
+          color: colorLow(m.totalDebtToEquityAnnual, 50, 150) },
+        { label: 'Current Ratio', val: m.currentRatioAnnual != null ? fmtNum(m.currentRatioAnnual,2) : null,
+          color: colorHigh(m.currentRatioAnnual, 1.5, 1.0) },
+        { label: 'P/E (TTM)', val: m.peTTM != null ? fmtNum(m.peTTM,1) : null,
+          color: colorLow(m.peTTM, 18, 30) },
+        { label: 'P/B', val: m.pbAnnual != null ? fmtNum(m.pbAnnual,2) : null,
+          color: colorLow(m.pbAnnual, 3, 8) },
+        { label: 'PEG', val: m.pegNormalizedAnnual != null ? fmtNum(m.pegNormalizedAnnual,2) : null,
+          color: colorLow(m.pegNormalizedAnnual, 1, 2) },
+        { label: 'Beta', val: m.beta != null ? fmtNum(m.beta,2) : null, color: 'neutral' },
+        { label: 'Analyst Buy %', val: buyPct != null ? buyPct.toFixed(0)+'%' : null,
+          color: colorHigh(buyPct, 60, 35) },
+        { label: 'Upside to Target', val: upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : null,
+          color: colorHigh(upside, 15, 0) },
+    ];
+
+    let html = '';
+    for (const item of items) {
+        const display = item.val != null ? item.val : '-';
+        const cls = item.val != null ? item.color : 'muted';
+        html += `<div class="metric">
+            <div class="metric-label">${item.label}</div>
+            <div class="metric-value ${cls}">${display}</div>
+        </div>`;
+    }
+    document.getElementById('metricsGrid').innerHTML = html;
+    document.getElementById('metricsCard').style.display = '';
+}
+
+// ---- Render news ----------------------------------------------------------
+function renderNews(ticker, companyName, articles) {
+    if (!articles || !articles.length) {
+        document.getElementById('newsCard').style.display = 'none';
+        return;
+    }
+
+    // Filter relevant articles
+    const relevant = articles.filter(a =>
+        isRelevant(ticker, companyName, a.headline || '', a.summary || '')
+    );
+
+    if (!relevant.length) {
+        document.getElementById('newsCard').style.display = 'none';
+        return;
+    }
+
+    // Sort newest first, take top 15
+    relevant.sort((a,b) => b.datetime - a.datetime);
+    const shown = relevant.slice(0, 15);
+
+    // Overall sentiment
+    const scores = shown.map(a => sentimentScore((a.headline||'') + ' ' + (a.summary||'')));
+    const avgScore = scores.reduce((s,x) => s + x.score, 0) / scores.length;
+    const overallLabel = avgScore > 0.1 ? 'bullish' : avgScore < -0.1 ? 'bearish' : 'neutral';
+
+    document.getElementById('overallSentiment').innerHTML =
+        `<span class="sentiment-badge sentiment-${overallLabel}">${overallLabel}</span>`;
+
+    let html = '';
+    shown.forEach((a, i) => {
+        const s = scores[i];
+        const cls = `sentiment-${s.label}`;
+        const scoreDisp = s.score > 0 ? '+' + s.score.toFixed(2) : s.score.toFixed(2);
+        const date = new Date(a.datetime * 1000).toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' });
+        const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent((a.headline||'') + ' ' + (a.source||''));
+        const summary = (a.summary||'').substring(0, 160);
+
+        html += `<div class="article">
+            <div class="article-row">
+                <div class="article-score sentiment-badge ${cls}">${scoreDisp}</div>
+                <div style="flex:1;min-width:0">
+                    <a href="${searchUrl}" target="_blank" class="article-headline">${a.headline||'No headline'}</a>
+                    <div class="article-meta">${a.source||''} · ${date}</div>
+                    ${summary ? `<div class="article-summary">${summary}${(a.summary||'').length > 160 ? '...' : ''}</div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    });
+
+    const filtered = articles.length - relevant.length;
+    if (filtered > 0) {
+        html += `<div style="font-size:0.72em;color:#556;padding-top:8px;text-align:center">
+            ${filtered} unrelated article${filtered!==1?'s':''} filtered out</div>`;
+    }
+
+    document.getElementById('articleList').innerHTML = html;
+    document.getElementById('newsCard').style.display = '';
+}
+
+// ---- Helpers --------------------------------------------------------------
+function fmtNum(v, dec=2) {
+    if (v == null || isNaN(v)) return '-';
+    return Number(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function fmtPct(v) {
+    if (v == null || isNaN(v)) return '-';
+    return (v * 100).toFixed(1) + '%';
+}
+function fmtBig(v) {
+    if (!v) return '-';
+    if (v >= 1e12) return '$' + (v/1e12).toFixed(1) + 'T';
+    if (v >= 1e9)  return '$' + (v/1e9).toFixed(1) + 'B';
+    if (v >= 1e6)  return '$' + (v/1e6).toFixed(0) + 'M';
+    return '$' + fmtNum(v, 0);
+}
+function colorHigh(v, goodAbove, badBelow) {
+    if (v == null) return 'muted';
+    return v > goodAbove ? 'good' : v < badBelow ? 'bad' : 'neutral';
+}
+function colorLow(v, goodBelow, badAbove) {
+    if (v == null) return 'muted';
+    return v < goodBelow ? 'good' : v > badAbove ? 'bad' : 'neutral';
+}
+function dateStr(offsetDays) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    return d.toISOString().split('T')[0];
+}
+
+function showToast(msg, duration = 2500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ---- Init -----------------------------------------------------------------
+(function() {
+    if (!getKey()) {
+        document.getElementById('noKeyState').style.display = '';
+        document.getElementById('keyHint').style.display = '';
+    }
+})();
+</script>
+</body>
+</html>

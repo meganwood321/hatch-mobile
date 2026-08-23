@@ -224,6 +224,7 @@
         }
         .vs-filter input:focus, .vs-filter select:focus { outline: none; border-color: #ffc107; }
         .vs-filter select option { background: #1a1a2e; }
+        .vf-hint { font-size: 0.68em; color: #556; line-height: 1.3; margin-top: 1px; }
 
         .vs-results-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -449,44 +450,64 @@
 
         <!-- Filters (hidden until data loaded) -->
         <div id="vsFilters" style="display:none" class="card">
-            <div class="section-header" style="margin-bottom:14px">
+            <div class="section-header" style="margin-bottom:12px">
                 <h2 style="margin:0">Filters</h2>
                 <button class="btn-secondary btn-sm" onclick="vsResetFilters()">Reset</button>
             </div>
-            <div class="vs-filters">
+
+            <!-- Group 1: Business Quality -->
+            <div style="font-size:0.72em;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#5dade2;margin-bottom:8px">
+                Business Quality — how good is the company?
+            </div>
+            <div class="vs-filters" style="margin-bottom:16px">
                 <div class="vs-filter">
                     <label>Min Score</label>
                     <input type="number" id="vfScore" value="0" min="0" max="100" oninput="vsApplyFilters()">
-                </div>
-                <div class="vs-filter">
-                    <label>Max PEG</label>
-                    <input type="number" id="vfPeg" value="" placeholder="any" step="0.1" min="0" oninput="vsApplyFilters()">
-                </div>
-                <div class="vs-filter">
-                    <label>Max Fwd P/E</label>
-                    <input type="number" id="vfPe" value="" placeholder="any" step="1" min="0" oninput="vsApplyFilters()">
-                </div>
-                <div class="vs-filter">
-                    <label>Max P/B</label>
-                    <input type="number" id="vfPb" value="" placeholder="any" step="0.5" min="0" oninput="vsApplyFilters()">
-                </div>
-                <div class="vs-filter">
-                    <label>Min Upside %</label>
-                    <input type="number" id="vfUpside" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Good ≥ 60 &nbsp;·&nbsp; Strong ≥ 70</div>
                 </div>
                 <div class="vs-filter">
                     <label>Min ROE %</label>
                     <input type="number" id="vfRoe" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Good ≥ 15% &nbsp;·&nbsp; Excellent ≥ 25%</div>
                 </div>
                 <div class="vs-filter">
                     <label>Min Rev Growth %</label>
                     <input type="number" id="vfRevGrow" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Solid ≥ 10% &nbsp;·&nbsp; High growth ≥ 25%</div>
                 </div>
                 <div class="vs-filter">
                     <label>Sector</label>
                     <select id="vfSector" onchange="vsApplyFilters()">
                         <option value="">All sectors</option>
                     </select>
+                    <div class="vf-hint">Narrow to one industry</div>
+                </div>
+            </div>
+
+            <!-- Group 2: Valuation & Pricing -->
+            <div style="font-size:0.72em;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f0b429;margin-bottom:8px">
+                Valuation &amp; Pricing — is the stock cheap right now?
+            </div>
+            <div class="vs-filters">
+                <div class="vs-filter">
+                    <label>Max PEG</label>
+                    <input type="number" id="vfPeg" value="" placeholder="any" step="0.1" min="0" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Value &lt; 1.0 &nbsp;·&nbsp; Cheap &lt; 0.5</div>
+                </div>
+                <div class="vs-filter">
+                    <label>Max Fwd P/E</label>
+                    <input type="number" id="vfPe" value="" placeholder="any" step="1" min="0" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Cheap &lt; 15 &nbsp;·&nbsp; Reasonable &lt; 20</div>
+                </div>
+                <div class="vs-filter">
+                    <label>Max P/B</label>
+                    <input type="number" id="vfPb" value="" placeholder="any" step="0.5" min="0" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Cheap &lt; 1.5 &nbsp;·&nbsp; Fair &lt; 3.0</div>
+                </div>
+                <div class="vs-filter">
+                    <label>Min Upside %</label>
+                    <input type="number" id="vfUpside" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                    <div class="vf-hint">Interesting ≥ 15% &nbsp;·&nbsp; Strong ≥ 30%</div>
                 </div>
             </div>
         </div>

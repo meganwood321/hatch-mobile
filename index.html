@@ -401,7 +401,19 @@
     <!-- ========================================================= -->
     <div id="pane-value" style="display:none">
 
-        <!-- Auto-fetch status bar -->
+        <!-- About this screen -->
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-bottom:14px;font-size:0.82em;color:#8892b0;line-height:1.6">
+            <div style="color:#fff;font-weight:700;margin-bottom:6px">How this works</div>
+            A scheduled scan runs automatically every weekday morning (7am NZT) on GitHub's servers — no action needed from you.
+            It scores ~900 stocks from the S&amp;P 500, S&amp;P 400, and NASDAQ 100 using Yahoo Finance data, then publishes the results here.
+            Open this tab on any device and the latest data loads automatically.
+            <div style="margin-top:8px;color:#556;font-size:0.92em">
+                Data source: Yahoo Finance &nbsp;·&nbsp; Scored by: Hatch Research scanner &nbsp;·&nbsp;
+                <a href="https://github.com/meganwood321/hatch-research/actions" target="_blank" style="color:#5dade2">View scan history on GitHub</a>
+            </div>
+        </div>
+
+        <!-- Status bar (shown after load) -->
         <div class="card" id="vsFetchBar" style="display:none">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
                 <div>
@@ -410,6 +422,18 @@
                 </div>
                 <button class="btn-value btn-sm" onclick="vsFetchFromGitHub(true)">↻ Refresh</button>
             </div>
+        </div>
+
+        <!-- Staleness warning (shown when data is unexpectedly old) -->
+        <div id="vsStaleWarning" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:12px;font-size:0.82em;line-height:1.6">
+            <div style="color:#ff6b6b;font-weight:700;margin-bottom:6px">⚠ Scan data is out of date</div>
+            <div style="color:#e0e0e0">The scan hasn't updated as expected — the data shown may be more than a few days old. Here's what to check:</div>
+            <ol style="color:#8892b0;margin:8px 0 0 16px">
+                <li>Go to <a href="https://github.com/meganwood321/hatch-research/actions" target="_blank" style="color:#5dade2">GitHub Actions</a> and look for <strong style="color:#fff">Daily Stock Scan</strong></li>
+                <li>If the latest run shows a red ✗, click it to see the error</li>
+                <li>If there are no recent runs, click <strong style="color:#fff">Run workflow</strong> to trigger one manually</li>
+                <li>If GitHub Actions is unavailable, run <strong style="color:#fff">Run Scan.bat</strong> on your desktop and drag the file below to load it manually</li>
+            </ol>
         </div>
 
         <!-- Loading state -->
@@ -1059,13 +1083,19 @@ function vsIngestData(json) {
     sel.innerHTML = '<option value="">All sectors</option>' +
         sectors.map(s => `<option value="${s}">${s}</option>`).join('');
 
-    // Show scan date
+    // Show scan date and check staleness
     if (json.scanned_at) {
-        const d = new Date(json.scanned_at);
-        document.getElementById('vsScanDate').textContent =
-            'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
-        document.getElementById('vsFetchDate').textContent =
-            'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
+        const scannedAt = new Date(json.scanned_at);
+        const daysSince = (Date.now() - scannedAt) / (1000 * 60 * 60 * 24);
+        const dateStr = 'Scanned ' + scannedAt.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        document.getElementById('vsScanDate').textContent = dateStr;
+        document.getElementById('vsFetchDate').textContent = dateStr;
+
+        // Warn if data is older than 3 days on a weekday (weekend gap of Fri→Mon is ~3 days, fine)
+        const todayDay = new Date().getDay(); // 0=Sun, 6=Sat
+        const isWeekday = todayDay >= 1 && todayDay <= 5;
+        document.getElementById('vsStaleWarning').style.display =
+            (isWeekday && daysSince > 3) ? '' : 'none';
     }
 
     document.getElementById('vsManualSection').style.display = 'none';

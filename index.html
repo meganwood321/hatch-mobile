@@ -421,7 +421,9 @@ function scoreStock(m, quote, recData, priceTarget) {
     const max    = { business: 35, strength: 20, valuation: 25, sentiment: 20 };
 
     // Business Quality (35)
-    const fcfMargin = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
+    let fcfMargin = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
+    if (fcfMargin == null && m.freeCashFlowPerShareTTM != null && m.revenuePerShareTTM > 0)
+        fcfMargin = m.freeCashFlowPerShareTTM / m.revenuePerShareTTM;
     if (fcfMargin != null)
         scores.business += fcfMargin > 0.20 ? 12 : fcfMargin > 0.10 ? 9 : fcfMargin > 0.05 ? 6 : fcfMargin > 0 ? 3 : 0;
 
@@ -438,7 +440,7 @@ function scoreStock(m, quote, recData, priceTarget) {
         scores.business += margin > 0.20 ? 3 : margin > 0.10 ? 2 : margin > 0 ? 1 : 0;
 
     // Financial Strength (20)
-    const de = m.totalDebtToEquityAnnual;
+    const de = m.totalDebtToEquityAnnual != null ? m.totalDebtToEquityAnnual : m.totalDebtToEquityQuarterly;
     if (de != null)
         scores.strength += de < 30 ? 8 : de < 60 ? 6 : de < 100 ? 4 : de < 200 ? 2 : 0;
 
@@ -660,12 +662,22 @@ function renderMetrics(m, q, r, pt) {
         if (t > 0) buyPct = ((rec.strongBuy||0)+(rec.buy||0)) / t * 100;
     }
 
+    // FCF margin: prefer direct field, fall back to per-share calculation
+    let fcfMarginVal = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
+    if (fcfMarginVal == null && m.freeCashFlowPerShareTTM != null && m.revenuePerShareTTM != null && m.revenuePerShareTTM > 0)
+        fcfMarginVal = m.freeCashFlowPerShareTTM / m.revenuePerShareTTM;
+    const fcfMarginPct = fcfMarginVal != null ? fcfMarginVal * 100 : null;
+
+    // D/E: prefer annual, fall back to quarterly
+    const deVal = m.totalDebtToEquityAnnual != null ? m.totalDebtToEquityAnnual
+                : m.totalDebtToEquityQuarterly != null ? m.totalDebtToEquityQuarterly : null;
+
     const items = [
         { label: 'ROE',             val: m.roeTTM != null ? fmtPct(m.roeTTM/100) : null, color: colorHigh(m.roeTTM, 15, 5) },
         { label: 'Revenue Growth',  val: m.revenueGrowthTTMYoy != null ? fmtPct(m.revenueGrowthTTMYoy/100) : null, color: colorHigh(m.revenueGrowthTTMYoy, 10, 0) },
         { label: 'Net Margin',      val: m.netProfitMarginTTM != null ? fmtPct(m.netProfitMarginTTM/100) : null, color: colorHigh(m.netProfitMarginTTM, 15, 0) },
-        { label: 'FCF Margin',      val: m.fcfMarginTTM != null ? fmtPct(m.fcfMarginTTM/100) : null, color: colorHigh(m.fcfMarginTTM, 10, 0) },
-        { label: 'Debt / Equity',   val: m.totalDebtToEquityAnnual != null ? fmtNum(m.totalDebtToEquityAnnual,0) : null, color: colorLow(m.totalDebtToEquityAnnual, 50, 150) },
+        { label: 'FCF Margin',      val: fcfMarginVal != null ? fmtPct(fcfMarginVal) : null, color: colorHigh(fcfMarginPct, 10, 0) },
+        { label: 'Debt / Equity',   val: deVal != null ? fmtNum(deVal, 0) : null, color: colorLow(deVal, 50, 150) },
         { label: 'Current Ratio',   val: m.currentRatioAnnual != null ? fmtNum(m.currentRatioAnnual,2) : null, color: colorHigh(m.currentRatioAnnual, 1.5, 1.0) },
         { label: 'P/E (TTM)',       val: m.peTTM != null ? fmtNum(m.peTTM,1) : null, color: colorLow(m.peTTM, 18, 30) },
         { label: 'P/B',             val: m.pbAnnual != null ? fmtNum(m.pbAnnual,2) : null, color: colorLow(m.pbAnnual, 3, 8) },

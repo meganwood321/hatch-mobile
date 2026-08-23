@@ -319,14 +319,14 @@
 
     <!-- Tabs -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('lookup')" id="tab-lookup">Stock Lookup</button>
-        <button class="tab-btn" onclick="switchTab('value')" id="tab-value">Value Screen</button>
+        <button class="tab-btn active" onclick="switchTab('value')" id="tab-value">Value Screen</button>
+        <button class="tab-btn" onclick="switchTab('lookup')" id="tab-lookup">Stock Lookup</button>
     </div>
 
     <!-- ========================================================= -->
     <!-- TAB: LOOKUP                                                -->
     <!-- ========================================================= -->
-    <div id="pane-lookup">
+    <div id="pane-lookup" style="display:none">
 
         <div class="card">
             <div class="search-row">
@@ -402,7 +402,7 @@
     <!-- ========================================================= -->
     <!-- TAB: VALUE SCREEN                                          -->
     <!-- ========================================================= -->
-    <div id="pane-value" style="display:none">
+    <div id="pane-value">
 
         <!-- About this screen -->
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:0.72em;color:#8892b0;line-height:1.5">
@@ -1327,6 +1327,7 @@ function showToast(msg, duration = 2500) {
         document.getElementById('keyHint').style.display = '';
     }
     renderHistory();
+    vsFetchFromGitHub(false);
 })();
 </script>
 </body>

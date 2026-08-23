@@ -24,26 +24,42 @@
 
         header {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 18px; padding-top: 6px;
+            margin-bottom: 14px; padding-top: 6px;
         }
         .header-brand h1 { font-size: 1.4em; color: #fff; }
-        .header-brand p { color: #8892b0; font-size: 0.75em; }
-        .header-actions { display: flex; gap: 8px; }
+        .header-brand p  { color: #8892b0; font-size: 0.75em; }
+        .header-actions  { display: flex; gap: 8px; }
 
+        /* --- Tabs --- */
+        .tabs {
+            display: flex; gap: 4px; margin-bottom: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 4px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 9px;
+            font-size: 0.88em; font-weight: 700; cursor: pointer;
+            background: transparent; color: #8892b0; transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: rgba(255,255,255,0.12); color: #fff;
+        }
+        .tab-btn:active { transform: none; }
+
+        /* --- Cards --- */
         .card {
             background: rgba(255,255,255,0.07);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 14px;
+            border-radius: 14px; padding: 16px; margin-bottom: 14px;
         }
         .card h2 {
             font-size: 0.8em; color: #8892b0; text-transform: uppercase;
             letter-spacing: 0.5px; margin-bottom: 12px;
         }
 
-        /* --- Search bar --- */
+        /* --- Search --- */
         .search-row { display: flex; gap: 8px; }
         .search-input {
             flex: 1; padding: 13px 14px; border-radius: 10px;
@@ -61,21 +77,23 @@
             transition: all 0.15s; -webkit-appearance: none;
         }
         button:active { transform: scale(0.97); }
-        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+        .btn-primary   { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
         .btn-secondary {
             background: rgba(255,255,255,0.1); color: #e0e0e0;
             border: 1px solid rgba(255,255,255,0.15);
         }
-        .btn-sm { padding: 7px 12px; font-size: 0.78em; }
+        .btn-sm  { padding: 7px 12px; font-size: 0.78em; }
         .btn-compare {
             background: rgba(93,173,226,0.15); color: #5dade2;
             border: 1px solid rgba(93,173,226,0.3);
         }
+        .btn-value {
+            background: rgba(255,193,7,0.15); color: #ffc107;
+            border: 1px solid rgba(255,193,7,0.3);
+        }
 
         /* --- History chips --- */
-        .history-row {
-            display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
-        }
+        .history-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
         .chip {
             padding: 4px 10px; border-radius: 20px; font-size: 0.76em;
             background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
@@ -83,22 +101,16 @@
         }
         .chip:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-        /* --- Desktop two-column layout for results --- */
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-        }
+        /* --- Desktop two-column results --- */
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 700px) {
-            .results-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .results-col-left { grid-column: 1; }
+            .results-grid { grid-template-columns: 1fr 1fr; }
+            .results-col-left  { grid-column: 1; }
             .results-col-right { grid-column: 2; }
-            .results-full { grid-column: 1 / -1; }
+            .results-full      { grid-column: 1 / -1; }
         }
 
-        /* --- Score hero --- */
+        /* --- Score circle --- */
         .score-hero { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
         .score-circle {
             width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0;
@@ -113,21 +125,21 @@
 
         .stock-header { flex: 1; min-width: 0; }
         .stock-ticker { font-size: 1.4em; font-weight: 800; color: #5dade2; }
-        .stock-name { font-size: 0.85em; color: #ccc; margin-top: 2px;
+        .stock-name   { font-size: 0.85em; color: #ccc; margin-top: 2px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .stock-meta { font-size: 0.75em; color: #8892b0; margin-top: 3px; }
+        .stock-meta   { font-size: 0.75em; color: #8892b0; margin-top: 3px; }
 
-        /* --- Score breakdown bars --- */
+        /* --- Score bars --- */
         .score-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .score-cat { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
+        .score-cat  { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
         .score-cat-label { font-size: 0.72em; color: #8892b0; margin-bottom: 5px; }
-        .score-cat-bar { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-        .score-cat-fill { height: 100%; border-radius: 3px; transition: width 0.6s; }
-        .score-cat-val { font-size: 0.8em; font-weight: 700; margin-top: 4px; }
+        .score-cat-bar   { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .score-cat-fill  { height: 100%; border-radius: 3px; transition: width 0.6s; }
+        .score-cat-val   { font-size: 0.8em; font-weight: 700; margin-top: 4px; }
 
-        /* --- Metrics grid --- */
-        .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .metric { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
+        /* --- Metrics --- */
+        .metrics      { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .metric       { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; }
         .metric-label { font-size: 0.7em; color: #8892b0; margin-bottom: 3px; }
         .metric-value { font-size: 0.95em; font-weight: 700; }
         .good    { color: #2ecc71; }
@@ -156,26 +168,19 @@
             font-size: 0.88em; color: #5dade2; font-weight: 600;
             text-decoration: none; display: block; line-height: 1.4;
         }
-        .article-headline:active { opacity: 0.7; }
-        .article-meta { font-size: 0.72em; color: #667; margin-top: 3px; }
+        .article-meta    { font-size: 0.72em; color: #667; margin-top: 3px; }
         .article-summary { font-size: 0.78em; color: #8892b0; margin-top: 5px; line-height: 1.4; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-
-        /* --- Price row --- */
-        .price-row {
-            display: flex; justify-content: space-between; align-items: baseline;
-            margin-bottom: 10px;
-        }
+        .section-header  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
         .price-big { font-size: 1.5em; font-weight: 800; color: #fff; }
         .price-sub { font-size: 0.78em; color: #8892b0; }
 
         /* --- Comparison table --- */
-        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.82em; overflow-x: auto; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
         .compare-table th {
             padding: 8px 10px; text-align: left; color: #8892b0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.4px;
-            position: sticky; top: 0;
         }
         .compare-table td {
             padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -184,13 +189,75 @@
         .compare-table tr:last-child td { border-bottom: none; }
         .compare-table tr:hover td { background: rgba(255,255,255,0.03); }
         .compare-ticker { font-weight: 800; color: #5dade2; font-size: 1em; }
-        .compare-name { font-size: 0.85em; color: #8892b0; }
-        .table-wrap { overflow-x: auto; }
+        .compare-name   { font-size: 0.85em; color: #8892b0; }
+        .table-wrap     { overflow-x: auto; }
         .remove-btn {
             background: none; border: none; color: #ff6b6b; cursor: pointer;
             font-size: 0.9em; padding: 2px 6px; opacity: 0.6;
         }
         .remove-btn:hover { opacity: 1; }
+
+        /* --- Value Screen --- */
+        .vs-drop-zone {
+            border: 2px dashed rgba(255,193,7,0.3); border-radius: 12px;
+            padding: 32px 20px; text-align: center; cursor: pointer;
+            transition: all 0.2s; margin-bottom: 14px;
+        }
+        .vs-drop-zone:hover, .vs-drop-zone.drag-over {
+            border-color: #ffc107; background: rgba(255,193,7,0.06);
+        }
+        .vs-drop-zone p   { color: #8892b0; font-size: 0.9em; margin-top: 8px; }
+        .vs-drop-zone em  { color: #ffc107; font-style: normal; font-weight: 700; }
+        #vsFileInput      { display: none; }
+
+        .vs-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px; margin-bottom: 14px;
+        }
+        .vs-filter { display: flex; flex-direction: column; gap: 4px; }
+        .vs-filter label { font-size: 0.72em; color: #8892b0; text-transform: uppercase; letter-spacing: 0.4px; }
+        .vs-filter input, .vs-filter select {
+            padding: 8px 10px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.07); color: #fff; font-size: 0.88em;
+        }
+        .vs-filter input:focus, .vs-filter select:focus { outline: none; border-color: #ffc107; }
+        .vs-filter select option { background: #1a1a2e; }
+
+        .vs-results-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+        }
+        .vs-count { font-size: 0.82em; color: #8892b0; }
+        .vs-scan-date { font-size: 0.75em; color: #556; }
+
+        .vs-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+        .vs-table th {
+            padding: 8px 10px; text-align: left; color: #8892b0; cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.72em; text-transform: uppercase; letter-spacing: 0.4px;
+            white-space: nowrap; user-select: none;
+        }
+        .vs-table th:hover { color: #ffc107; }
+        .vs-table th.sort-asc::after  { content: ' ↑'; color: #ffc107; }
+        .vs-table th.sort-desc::after { content: ' ↓'; color: #ffc107; }
+        .vs-table td {
+            padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            white-space: nowrap;
+        }
+        .vs-table tr:hover td { background: rgba(255,255,255,0.04); cursor: pointer; }
+        .vs-table tr:last-child td { border-bottom: none; }
+        .vs-ticker { font-weight: 800; color: #5dade2; }
+        .vs-name   { font-size: 0.82em; color: #8892b0; max-width: 140px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .score-pill {
+            display: inline-block; padding: 2px 8px; border-radius: 20px;
+            font-size: 0.82em; font-weight: 800;
+        }
+        .score-pill.high { background: rgba(46,204,113,0.2); color: #2ecc71; }
+        .score-pill.med  { background: rgba(255,193,7,0.2);  color: #ffc107; }
+        .score-pill.low  { background: rgba(255,107,107,0.2);color: #ff6b6b; }
 
         /* --- Misc --- */
         .empty { text-align: center; padding: 30px 20px; color: #667; }
@@ -203,8 +270,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading { text-align: center; padding: 20px; color: #8892b0; font-size: 0.9em; }
-
-        /* --- Toast --- */
         .toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
             background: rgba(30,30,60,0.95); border: 1px solid rgba(255,255,255,0.15);
@@ -213,8 +278,6 @@
             transition: transform 0.3s; white-space: nowrap;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
-
-        /* --- Modal --- */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -225,8 +288,8 @@
             background: #1a1a2e; border: 1px solid rgba(255,255,255,0.15);
             border-radius: 16px; padding: 24px; width: 100%; max-width: 380px;
         }
-        .modal-box h3 { color: #fff; margin-bottom: 8px; }
-        .modal-box p { color: #8892b0; font-size: 0.85em; margin-bottom: 14px; line-height: 1.5; }
+        .modal-box h3  { color: #fff; margin-bottom: 8px; }
+        .modal-box p   { color: #8892b0; font-size: 0.85em; margin-bottom: 14px; line-height: 1.5; }
         .modal-input {
             width: 100%; padding: 12px; border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.2);
@@ -234,9 +297,8 @@
             margin-bottom: 12px;
         }
         .modal-input:focus { outline: none; border-color: #5dade2; }
-        .modal-row { display: flex; gap: 8px; }
-
-        .key-hint { font-size: 0.78em; color: #8892b0; margin-top: 10px; line-height: 1.5; }
+        .modal-row  { display: flex; gap: 8px; }
+        .key-hint   { font-size: 0.78em; color: #8892b0; margin-top: 10px; line-height: 1.5; }
         .key-hint a { color: #5dade2; }
     </style>
 </head>
@@ -252,96 +314,180 @@
         </div>
     </header>
 
-    <!-- Search -->
-    <div class="card">
-        <div class="search-row">
-            <input type="text" class="search-input" id="tickerInput"
-                   placeholder="Enter ticker, e.g. AAPL"
-                   maxlength="10"
-                   onkeydown="if(event.key==='Enter')search()">
-            <button class="btn-primary" onclick="search()" id="btnSearch">Look up</button>
-            <button class="btn-compare btn-sm" onclick="addToCompare()" id="btnAddCompare" style="display:none" title="Add to comparison">+ Compare</button>
-        </div>
-        <div class="key-hint" id="keyHint" style="display:none">
-            ⚠️ Finnhub API key needed. <a href="#" onclick="showKeyModal();return false;">Set your key</a> — free at
-            <a href="https://finnhub.io" target="_blank">finnhub.io</a>
-        </div>
-        <div class="history-row" id="historyRow"></div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('lookup')" id="tab-lookup">Stock Lookup</button>
+        <button class="tab-btn" onclick="switchTab('value')" id="tab-value">Value Screen</button>
     </div>
 
-    <!-- No key state -->
-    <div id="noKeyState" style="display:none" class="card">
-        <div class="empty">
-            <p>Set your free Finnhub API key to get started.</p>
-            <br>
-            <button class="btn-primary" onclick="showKeyModal()">Set API Key</button>
-            <br><br>
-            <p style="font-size:0.78em">Get a free key at <a href="https://finnhub.io" target="_blank" style="color:#5dade2">finnhub.io</a></p>
-        </div>
-    </div>
+    <!-- ========================================================= -->
+    <!-- TAB: LOOKUP                                                -->
+    <!-- ========================================================= -->
+    <div id="pane-lookup">
 
-    <!-- Results (hidden until searched) -->
-    <div id="results" style="display:none">
-        <div class="results-grid">
-            <!-- Left col -->
-            <div class="results-col-left">
-                <div class="card" id="overviewCard">
-                    <div class="loading"><div class="spinner"></div>Loading...</div>
-                </div>
-                <div class="card" id="scoreCard" style="display:none">
-                    <h2>Score Breakdown</h2>
-                    <div class="score-cats" id="scoreCats"></div>
-                </div>
+        <div class="card">
+            <div class="search-row">
+                <input type="text" class="search-input" id="tickerInput"
+                       placeholder="Enter ticker, e.g. AAPL" maxlength="10"
+                       onkeydown="if(event.key==='Enter')search()">
+                <button class="btn-primary" onclick="search()" id="btnSearch">Look up</button>
+                <button class="btn-compare btn-sm" onclick="addToCompare()" id="btnAddCompare" style="display:none" title="Add to comparison">+ Compare</button>
             </div>
-            <!-- Right col -->
-            <div class="results-col-right">
-                <div class="card" id="metricsCard" style="display:none">
-                    <h2>Key Metrics</h2>
-                    <div class="metrics" id="metricsGrid"></div>
-                </div>
+            <div class="key-hint" id="keyHint" style="display:none">
+                ⚠️ Finnhub API key needed. <a href="#" onclick="showKeyModal();return false;">Set your key</a> — free at
+                <a href="https://finnhub.io" target="_blank">finnhub.io</a>
             </div>
-            <!-- Full-width news -->
-            <div class="results-full">
-                <div class="card" id="newsCard" style="display:none">
-                    <div class="section-header">
-                        <h2 style="margin:0">News &amp; Sentiment</h2>
-                        <span id="overallSentiment"></span>
+            <div class="history-row" id="historyRow"></div>
+        </div>
+
+        <div id="noKeyState" style="display:none" class="card">
+            <div class="empty">
+                <p>Set your free Finnhub API key to get started.</p><br>
+                <button class="btn-primary" onclick="showKeyModal()">Set API Key</button><br><br>
+                <p style="font-size:0.78em">Get a free key at <a href="https://finnhub.io" target="_blank" style="color:#5dade2">finnhub.io</a></p>
+            </div>
+        </div>
+
+        <div id="results" style="display:none">
+            <div class="results-grid">
+                <div class="results-col-left">
+                    <div class="card" id="overviewCard">
+                        <div class="loading"><div class="spinner"></div>Loading...</div>
                     </div>
-                    <div id="articleList"></div>
+                    <div class="card" id="scoreCard" style="display:none">
+                        <h2>Score Breakdown</h2>
+                        <div class="score-cats" id="scoreCats"></div>
+                    </div>
+                </div>
+                <div class="results-col-right">
+                    <div class="card" id="metricsCard" style="display:none">
+                        <h2>Key Metrics</h2>
+                        <div class="metrics" id="metricsGrid"></div>
+                    </div>
+                </div>
+                <div class="results-full">
+                    <div class="card" id="newsCard" style="display:none">
+                        <div class="section-header">
+                            <h2 style="margin:0">News &amp; Sentiment</h2>
+                            <span id="overallSentiment"></span>
+                        </div>
+                        <div id="articleList"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Comparison -->
-    <div id="compareSection" style="display:none" class="card">
-        <div class="section-header">
-            <h2 style="margin:0">Comparison (<span id="compareCount">0</span>)</h2>
-            <button class="btn-secondary btn-sm" onclick="clearCompare()">Clear all</button>
+        <div id="compareSection" style="display:none" class="card">
+            <div class="section-header">
+                <h2 style="margin:0">Comparison (<span id="compareCount">0</span>)</h2>
+                <button class="btn-secondary btn-sm" onclick="clearCompare()">Clear all</button>
+            </div>
+            <div class="table-wrap">
+                <table class="compare-table">
+                    <thead><tr>
+                        <th>Ticker</th><th>Score</th><th>Price</th><th>Mkt Cap</th>
+                        <th>ROE</th><th>Rev Growth</th><th>Net Margin</th>
+                        <th>D/E</th><th>P/E</th><th>PEG</th><th>Upside</th><th></th>
+                    </tr></thead>
+                    <tbody id="compareBody"></tbody>
+                </table>
+            </div>
         </div>
-        <div class="table-wrap">
-            <table class="compare-table">
-                <thead>
-                    <tr>
-                        <th>Ticker</th>
-                        <th>Score</th>
-                        <th>Price</th>
-                        <th>Market Cap</th>
-                        <th>ROE</th>
-                        <th>Rev Growth</th>
-                        <th>Net Margin</th>
-                        <th>D/E</th>
-                        <th>P/E</th>
-                        <th>PEG</th>
-                        <th>Upside</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="compareBody"></tbody>
-            </table>
+
+    </div><!-- /pane-lookup -->
+
+    <!-- ========================================================= -->
+    <!-- TAB: VALUE SCREEN                                          -->
+    <!-- ========================================================= -->
+    <div id="pane-value" style="display:none">
+
+        <!-- Drop zone -->
+        <div class="vs-drop-zone" id="vsDropZone" onclick="document.getElementById('vsFileInput').click()"
+             ondragover="vsDragOver(event)" ondragleave="vsDragLeave(event)" ondrop="vsDrop(event)">
+            <div style="font-size:2em">📂</div>
+            <p>Click or drag <em>scan_results.json</em> here</p>
+            <p style="font-size:0.78em;margin-top:6px;color:#556">Run <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px">python scan.py</code> in the Hatch Research folder to generate this file</p>
         </div>
-    </div>
-</div>
+        <input type="file" id="vsFileInput" accept=".json" onchange="vsLoadFile(event)">
+
+        <!-- Filters (hidden until data loaded) -->
+        <div id="vsFilters" style="display:none" class="card">
+            <div class="section-header" style="margin-bottom:14px">
+                <h2 style="margin:0">Filters</h2>
+                <button class="btn-secondary btn-sm" onclick="vsResetFilters()">Reset</button>
+            </div>
+            <div class="vs-filters">
+                <div class="vs-filter">
+                    <label>Min Score</label>
+                    <input type="number" id="vfScore" value="0" min="0" max="100" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Max PEG</label>
+                    <input type="number" id="vfPeg" value="" placeholder="any" step="0.1" min="0" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Max Fwd P/E</label>
+                    <input type="number" id="vfPe" value="" placeholder="any" step="1" min="0" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Max P/B</label>
+                    <input type="number" id="vfPb" value="" placeholder="any" step="0.5" min="0" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Min Upside %</label>
+                    <input type="number" id="vfUpside" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Min ROE %</label>
+                    <input type="number" id="vfRoe" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Min Rev Growth %</label>
+                    <input type="number" id="vfRevGrow" value="" placeholder="any" step="5" oninput="vsApplyFilters()">
+                </div>
+                <div class="vs-filter">
+                    <label>Sector</label>
+                    <select id="vfSector" onchange="vsApplyFilters()">
+                        <option value="">All sectors</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results table -->
+        <div id="vsResults" style="display:none" class="card">
+            <div class="vs-results-header">
+                <div>
+                    <span class="vs-count" id="vsCount">0 stocks</span>
+                    <span class="vs-scan-date" id="vsScanDate" style="margin-left:10px"></span>
+                </div>
+                <button class="btn-value btn-sm" onclick="vsExport()">Export CSV</button>
+            </div>
+            <div class="table-wrap">
+                <table class="vs-table" id="vsTable">
+                    <thead><tr>
+                        <th onclick="vsSort('score')"       id="vsh-score">Score</th>
+                        <th onclick="vsSort('ticker')"      id="vsh-ticker">Ticker</th>
+                        <th>Name</th>
+                        <th>Sector</th>
+                        <th onclick="vsSort('price')"       id="vsh-price">Price</th>
+                        <th onclick="vsSort('marketCap')"   id="vsh-marketCap">Mkt Cap</th>
+                        <th onclick="vsSort('pegRatio')"    id="vsh-pegRatio">PEG</th>
+                        <th onclick="vsSort('forwardPE')"   id="vsh-forwardPE">Fwd P/E</th>
+                        <th onclick="vsSort('priceToBook')" id="vsh-priceToBook">P/B</th>
+                        <th onclick="vsSort('upside')"      id="vsh-upside">Upside</th>
+                        <th onclick="vsSort('returnOnEquity')" id="vsh-returnOnEquity">ROE</th>
+                        <th onclick="vsSort('revenueGrowth')" id="vsh-revenueGrowth">Rev Growth</th>
+                        <th onclick="vsSort('debtToEquity')"  id="vsh-debtToEquity">D/E</th>
+                    </tr></thead>
+                    <tbody id="vsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /pane-value -->
+
+</div><!-- /container -->
 
 <!-- API key modal -->
 <div class="modal-overlay" id="keyModal">
@@ -359,13 +505,27 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- Config -----------------------------------------------------------------
-const NEWS_DAYS = 14;
+// ============================================================
+// Config & globals
+// ============================================================
+const NEWS_DAYS  = 14;
 const FINNHUB_BASE = 'https://finnhub.io/api/v1';
 const MAX_HISTORY = 8;
 const MAX_COMPARE = 6;
 
-// ---- Key management ---------------------------------------------------------
+// ============================================================
+// Tab switching
+// ============================================================
+function switchTab(tab) {
+    document.getElementById('pane-lookup').style.display = tab === 'lookup' ? '' : 'none';
+    document.getElementById('pane-value').style.display  = tab === 'value'  ? '' : 'none';
+    document.getElementById('tab-lookup').classList.toggle('active', tab === 'lookup');
+    document.getElementById('tab-value').classList.toggle('active',  tab === 'value');
+}
+
+// ============================================================
+// Key management
+// ============================================================
 function getKey() { return localStorage.getItem('hatch_finnhub_key') || ''; }
 function saveKey() {
     const k = document.getElementById('keyInput').value.trim();
@@ -382,7 +542,9 @@ function showKeyModal() {
 }
 function hideKeyModal() { document.getElementById('keyModal').classList.remove('show'); }
 
-// ---- History ----------------------------------------------------------------
+// ============================================================
+// History
+// ============================================================
 function getHistory() {
     try { return JSON.parse(localStorage.getItem('hatch_history') || '[]'); } catch { return []; }
 }
@@ -395,17 +557,16 @@ function addHistory(ticker) {
 function renderHistory() {
     const h = getHistory();
     const row = document.getElementById('historyRow');
-    if (!h.length) { row.innerHTML = ''; return; }
-    row.innerHTML = h.map(t =>
-        `<span class="chip" onclick="searchTicker('${t}')">${t}</span>`
-    ).join('');
+    row.innerHTML = h.map(t => `<span class="chip" onclick="searchTicker('${t}')">${t}</span>`).join('');
 }
 function searchTicker(t) {
     document.getElementById('tickerInput').value = t;
     search();
 }
 
-// ---- Finnhub API ------------------------------------------------------------
+// ============================================================
+// Finnhub API
+// ============================================================
 async function finnhub(endpoint, params = {}) {
     const key = getKey();
     if (!key) throw new Error('No API key');
@@ -415,12 +576,13 @@ async function finnhub(endpoint, params = {}) {
     return resp.json();
 }
 
-// ---- Scoring (mirrors Python scan.py) --------------------------------------
+// ============================================================
+// Scoring
+// ============================================================
 function scoreStock(m, quote, recData, priceTarget) {
     const scores = { business: 0, strength: 0, valuation: 0, sentiment: 0 };
     const max    = { business: 35, strength: 20, valuation: 25, sentiment: 20 };
 
-    // Business Quality (35)
     let fcfMargin = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
     if (fcfMargin == null && m.freeCashFlowPerShareTTM != null && m.revenuePerShareTTM > 0)
         fcfMargin = m.freeCashFlowPerShareTTM / m.revenuePerShareTTM;
@@ -439,7 +601,6 @@ function scoreStock(m, quote, recData, priceTarget) {
     if (margin != null)
         scores.business += margin > 0.20 ? 3 : margin > 0.10 ? 2 : margin > 0 ? 1 : 0;
 
-    // Financial Strength (20)
     const de = m.totalDebtToEquityAnnual != null ? m.totalDebtToEquityAnnual : m.totalDebtToEquityQuarterly;
     if (de != null)
         scores.strength += de < 30 ? 8 : de < 60 ? 6 : de < 100 ? 4 : de < 200 ? 2 : 0;
@@ -449,10 +610,8 @@ function scoreStock(m, quote, recData, priceTarget) {
         scores.strength += cr > 2.0 ? 6 : cr > 1.5 ? 5 : cr > 1.0 ? 3 : cr > 0.8 ? 1 : 0;
 
     const fcfPs = m.freeCashFlowPerShareTTM;
-    if (fcfPs != null)
-        scores.strength += fcfPs > 0 ? 6 : 0;
+    if (fcfPs != null) scores.strength += fcfPs > 0 ? 6 : 0;
 
-    // Valuation (25)
     const peg = m.pegNormalizedAnnual;
     if (peg != null && peg > 0)
         scores.valuation += peg < 0.5 ? 10 : peg < 1.0 ? 8 : peg < 1.5 ? 5 : peg < 2.0 ? 3 : 0;
@@ -469,7 +628,6 @@ function scoreStock(m, quote, recData, priceTarget) {
     if (pe != null && pe > 0)
         scores.valuation += pe < 12 ? 3 : pe < 18 ? 2 : pe < 25 ? 1 : 0;
 
-    // Analyst Sentiment (20)
     if (recData && recData.length) {
         const r = recData[0];
         const total = (r.strongBuy||0)+(r.buy||0)+(r.hold||0)+(r.sell||0)+(r.strongSell||0);
@@ -491,7 +649,9 @@ function scoreStock(m, quote, recData, priceTarget) {
     return { total, scores, max };
 }
 
-// ---- Keyword sentiment -------------------------------------------------------
+// ============================================================
+// Sentiment
+// ============================================================
 const BULLISH_WORDS = ['upgrade','outperform','buy','strong','growth','beat','surge','rally',
     'bullish','record','positive','soar','profit','exceed','gain','optimistic','momentum',
     'raised','raises','lifted','lifts','top pick','overweight'];
@@ -522,11 +682,12 @@ function isRelevant(ticker, name, headline, summary) {
     return false;
 }
 
-// ---- State ------------------------------------------------------------------
+// ============================================================
+// Lookup tab — search
+// ============================================================
 let currentTicker = '';
-let currentData = null; // { ticker, profile, quote, metrics, recs, priceTarget, scoreResult }
+let currentData = null;
 
-// ---- Main search ------------------------------------------------------------
 async function search() {
     const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
     if (!ticker) return;
@@ -563,11 +724,11 @@ async function search() {
         ]);
 
         const p  = profile.value || {};
-        const q  = quote.value  || {};
+        const q  = quote.value   || {};
         const m  = (metrics.value && metrics.value.metric) || {};
-        const r  = recs.value   || [];
-        const pt = target.value || {};
-        const n  = news.value   || [];
+        const r  = recs.value    || [];
+        const pt = target.value  || {};
+        const n  = news.value    || [];
 
         if (!p.name && !q.c) {
             document.getElementById('overviewCard').innerHTML =
@@ -583,7 +744,6 @@ async function search() {
         renderMetrics(m, q, r, pt);
         renderNews(ticker, p.name || '', n);
         addHistory(ticker);
-
         document.getElementById('btnAddCompare').style.display = '';
 
     } catch (e) {
@@ -594,7 +754,6 @@ async function search() {
     }
 }
 
-// ---- Render overview --------------------------------------------------------
 function renderOverview(ticker, p, q, pt, scoreResult) {
     const score = scoreResult.total;
     const cls = score >= 60 ? 'score-high' : score >= 35 ? 'score-med' : 'score-low';
@@ -620,31 +779,27 @@ function renderOverview(ticker, p, q, pt, scoreResult) {
                 <span style="color:#8892b0"> · 52wk $${fmtNum(q.l)}–$${fmtNum(q.h)}</span>
             </span>
         </div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap">
-            <span style="font-size:0.78em; color:#8892b0">Mkt Cap: ${mcap}</span>
-            ${pt && pt.targetMean ? `<span style="font-size:0.78em; color:#8892b0">Target: $${fmtNum(pt.targetMean)}</span>` : ''}
-            ${p.country ? `<span style="font-size:0.78em; color:#8892b0">${p.country}</span>` : ''}
-        </div>
-    `;
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <span style="font-size:0.78em;color:#8892b0">Mkt Cap: ${mcap}</span>
+            ${pt && pt.targetMean ? `<span style="font-size:0.78em;color:#8892b0">Target: $${fmtNum(pt.targetMean)}</span>` : ''}
+            ${p.country ? `<span style="font-size:0.78em;color:#8892b0">${p.country}</span>` : ''}
+        </div>`;
 }
 
-// ---- Render score breakdown -------------------------------------------------
 function renderScoreBreakdown(scoreResult) {
     const { scores, max } = scoreResult;
     const cats = [
-        { key: 'business',  label: 'Business Quality',   color: '#5dade2' },
-        { key: 'strength',  label: 'Financial Strength',  color: '#2ecc71' },
-        { key: 'valuation', label: 'Valuation',           color: '#ffc107' },
-        { key: 'sentiment', label: 'Analyst Sentiment',   color: '#e67e22' },
+        { key: 'business',  label: 'Business Quality',  color: '#5dade2' },
+        { key: 'strength',  label: 'Financial Strength', color: '#2ecc71' },
+        { key: 'valuation', label: 'Valuation',          color: '#ffc107' },
+        { key: 'sentiment', label: 'Analyst Sentiment',  color: '#e67e22' },
     ];
     let html = '';
     for (const c of cats) {
         const pct = max[c.key] > 0 ? (scores[c.key] / max[c.key] * 100) : 0;
         html += `<div class="score-cat">
             <div class="score-cat-label">${c.label}</div>
-            <div class="score-cat-bar">
-                <div class="score-cat-fill" style="width:${pct}%;background:${c.color}"></div>
-            </div>
+            <div class="score-cat-bar"><div class="score-cat-fill" style="width:${pct}%;background:${c.color}"></div></div>
             <div class="score-cat-val" style="color:${c.color}">${scores[c.key]}/${max[c.key]}</div>
         </div>`;
     }
@@ -652,7 +807,6 @@ function renderScoreBreakdown(scoreResult) {
     document.getElementById('scoreCard').style.display = '';
 }
 
-// ---- Render metrics ---------------------------------------------------------
 function renderMetrics(m, q, r, pt) {
     const upside = pt && pt.targetMean && q.c ? ((pt.targetMean - q.c) / q.c * 100) : null;
     let buyPct = null;
@@ -662,57 +816,44 @@ function renderMetrics(m, q, r, pt) {
         if (t > 0) buyPct = ((rec.strongBuy||0)+(rec.buy||0)) / t * 100;
     }
 
-    // FCF margin: prefer direct field, fall back to per-share calculation
     let fcfMarginVal = m.fcfMarginTTM != null ? m.fcfMarginTTM / 100 : null;
     if (fcfMarginVal == null && m.freeCashFlowPerShareTTM != null && m.revenuePerShareTTM != null && m.revenuePerShareTTM > 0)
         fcfMarginVal = m.freeCashFlowPerShareTTM / m.revenuePerShareTTM;
     const fcfMarginPct = fcfMarginVal != null ? fcfMarginVal * 100 : null;
 
-    // D/E: prefer annual, fall back to quarterly
     const deVal = m.totalDebtToEquityAnnual != null ? m.totalDebtToEquityAnnual
                 : m.totalDebtToEquityQuarterly != null ? m.totalDebtToEquityQuarterly : null;
 
     const items = [
-        { label: 'ROE',             val: m.roeTTM != null ? fmtPct(m.roeTTM/100) : null, color: colorHigh(m.roeTTM, 15, 5) },
-        { label: 'Revenue Growth',  val: m.revenueGrowthTTMYoy != null ? fmtPct(m.revenueGrowthTTMYoy/100) : null, color: colorHigh(m.revenueGrowthTTMYoy, 10, 0) },
-        { label: 'Net Margin',      val: m.netProfitMarginTTM != null ? fmtPct(m.netProfitMarginTTM/100) : null, color: colorHigh(m.netProfitMarginTTM, 15, 0) },
-        { label: 'FCF Margin',      val: fcfMarginVal != null ? fmtPct(fcfMarginVal) : null, color: colorHigh(fcfMarginPct, 10, 0) },
-        { label: 'Debt / Equity',   val: deVal != null ? fmtNum(deVal, 0) : null, color: colorLow(deVal, 50, 150) },
-        { label: 'Current Ratio',   val: m.currentRatioAnnual != null ? fmtNum(m.currentRatioAnnual,2) : null, color: colorHigh(m.currentRatioAnnual, 1.5, 1.0) },
-        { label: 'P/E (TTM)',       val: m.peTTM != null ? fmtNum(m.peTTM,1) : null, color: colorLow(m.peTTM, 18, 30) },
-        { label: 'P/B',             val: m.pbAnnual != null ? fmtNum(m.pbAnnual,2) : null, color: colorLow(m.pbAnnual, 3, 8) },
-        { label: 'PEG',             val: m.pegNormalizedAnnual != null ? fmtNum(m.pegNormalizedAnnual,2) : null, color: colorLow(m.pegNormalizedAnnual, 1, 2) },
-        { label: 'Beta',            val: m.beta != null ? fmtNum(m.beta,2) : null, color: 'neutral' },
-        { label: 'Analyst Buy %',   val: buyPct != null ? buyPct.toFixed(0)+'%' : null, color: colorHigh(buyPct, 60, 35) },
-        { label: 'Upside to Target',val: upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : null, color: colorHigh(upside, 15, 0) },
+        { label: 'ROE',              val: m.roeTTM != null ? fmtPct(m.roeTTM/100) : null,                     color: colorHigh(m.roeTTM, 15, 5) },
+        { label: 'Revenue Growth',   val: m.revenueGrowthTTMYoy != null ? fmtPct(m.revenueGrowthTTMYoy/100) : null, color: colorHigh(m.revenueGrowthTTMYoy, 10, 0) },
+        { label: 'Net Margin',       val: m.netProfitMarginTTM != null ? fmtPct(m.netProfitMarginTTM/100) : null,    color: colorHigh(m.netProfitMarginTTM, 15, 0) },
+        { label: 'FCF Margin',       val: fcfMarginVal != null ? fmtPct(fcfMarginVal) : null,                  color: colorHigh(fcfMarginPct, 10, 0) },
+        { label: 'Debt / Equity',    val: deVal != null ? fmtNum(deVal, 0) : null,                             color: colorLow(deVal, 50, 150) },
+        { label: 'Current Ratio',    val: m.currentRatioAnnual != null ? fmtNum(m.currentRatioAnnual,2) : null, color: colorHigh(m.currentRatioAnnual, 1.5, 1.0) },
+        { label: 'P/E (TTM)',        val: m.peTTM != null && m.peTTM > 0 ? fmtNum(m.peTTM,1) : null,         color: colorLow(m.peTTM, 18, 30) },
+        { label: 'P/B',              val: m.pbAnnual != null ? fmtNum(m.pbAnnual,2) : null,                    color: colorLow(m.pbAnnual, 3, 8) },
+        { label: 'PEG',              val: m.pegNormalizedAnnual != null && m.pegNormalizedAnnual > 0 ? fmtNum(m.pegNormalizedAnnual,2) : null, color: colorLow(m.pegNormalizedAnnual, 1, 2) },
+        { label: 'Beta',             val: m.beta != null ? fmtNum(m.beta,2) : null,                            color: 'neutral' },
+        { label: 'Analyst Buy %',    val: buyPct != null ? buyPct.toFixed(0)+'%' : null,                       color: colorHigh(buyPct, 60, 35) },
+        { label: 'Upside to Target', val: upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : null,   color: colorHigh(upside, 15, 0) },
     ];
 
     let html = '';
     for (const item of items) {
         const display = item.val != null ? item.val : '-';
         const cls = item.val != null ? item.color : 'muted';
-        html += `<div class="metric">
-            <div class="metric-label">${item.label}</div>
-            <div class="metric-value ${cls}">${display}</div>
-        </div>`;
+        html += `<div class="metric"><div class="metric-label">${item.label}</div><div class="metric-value ${cls}">${display}</div></div>`;
     }
     document.getElementById('metricsGrid').innerHTML = html;
     document.getElementById('metricsCard').style.display = '';
 }
 
-// ---- Render news ------------------------------------------------------------
 function renderNews(ticker, companyName, articles) {
-    if (!articles || !articles.length) {
-        document.getElementById('newsCard').style.display = 'none';
-        return;
-    }
-    const relevant = articles.filter(a =>
-        isRelevant(ticker, companyName, a.headline || '', a.summary || '')
-    );
-    if (!relevant.length) {
-        document.getElementById('newsCard').style.display = 'none';
-        return;
-    }
+    if (!articles || !articles.length) { document.getElementById('newsCard').style.display = 'none'; return; }
+    const relevant = articles.filter(a => isRelevant(ticker, companyName, a.headline || '', a.summary || ''));
+    if (!relevant.length) { document.getElementById('newsCard').style.display = 'none'; return; }
+
     relevant.sort((a,b) => b.datetime - a.datetime);
     const shown = relevant.slice(0, 15);
     const scores = shown.map(a => sentimentScore((a.headline||'') + ' ' + (a.summary||'')));
@@ -725,21 +866,18 @@ function renderNews(ticker, companyName, articles) {
     let html = '';
     shown.forEach((a, i) => {
         const s = scores[i];
-        const cls = `sentiment-${s.label}`;
         const scoreDisp = s.score > 0 ? '+' + s.score.toFixed(2) : s.score.toFixed(2);
         const date = new Date(a.datetime * 1000).toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' });
         const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent((a.headline||'') + ' ' + (a.source||''));
         const summary = (a.summary||'').substring(0, 160);
-        html += `<div class="article">
-            <div class="article-row">
-                <div class="article-score sentiment-badge ${cls}">${scoreDisp}</div>
-                <div style="flex:1;min-width:0">
-                    <a href="${searchUrl}" target="_blank" class="article-headline">${a.headline||'No headline'}</a>
-                    <div class="article-meta">${a.source||''} · ${date}</div>
-                    ${summary ? `<div class="article-summary">${summary}${(a.summary||'').length > 160 ? '...' : ''}</div>` : ''}
-                </div>
+        html += `<div class="article"><div class="article-row">
+            <div class="article-score sentiment-badge sentiment-${s.label}">${scoreDisp}</div>
+            <div style="flex:1;min-width:0">
+                <a href="${searchUrl}" target="_blank" class="article-headline">${a.headline||'No headline'}</a>
+                <div class="article-meta">${a.source||''} · ${date}</div>
+                ${summary ? `<div class="article-summary">${summary}${(a.summary||'').length > 160 ? '...' : ''}</div>` : ''}
             </div>
-        </div>`;
+        </div></div>`;
     });
     const filtered = articles.length - relevant.length;
     if (filtered > 0)
@@ -749,8 +887,10 @@ function renderNews(ticker, companyName, articles) {
     document.getElementById('newsCard').style.display = '';
 }
 
-// ---- Comparison -------------------------------------------------------------
-let compareList = []; // [{ ticker, name, score, price, mcap, roe, revGrow, margin, de, pe, peg, upside }]
+// ============================================================
+// Comparison
+// ============================================================
+let compareList = [];
 
 function addToCompare() {
     if (!currentData) return;
@@ -765,70 +905,239 @@ function addToCompare() {
         const t = (rec.strongBuy||0)+(rec.buy||0)+(rec.hold||0)+(rec.sell||0)+(rec.strongSell||0);
         if (t > 0) buyPct = ((rec.strongBuy||0)+(rec.buy||0)) / t * 100;
     }
-
     compareList.push({
-        ticker,
-        name: p.name || ticker,
-        score: scoreResult.total,
-        price: q.c,
+        ticker, name: p.name || ticker, score: scoreResult.total, price: q.c,
         mcap: p.marketCapitalization ? p.marketCapitalization * 1e6 : null,
-        roe:  m.roeTTM != null ? m.roeTTM / 100 : null,
+        roe: m.roeTTM != null ? m.roeTTM / 100 : null,
         revGrow: m.revenueGrowthTTMYoy != null ? m.revenueGrowthTTMYoy / 100 : null,
         margin: m.netProfitMarginTTM != null ? m.netProfitMarginTTM / 100 : null,
-        de: m.totalDebtToEquityAnnual,
-        pe: m.peTTM,
-        peg: m.pegNormalizedAnnual,
-        upside,
-        buyPct,
+        de: m.totalDebtToEquityAnnual != null ? m.totalDebtToEquityAnnual : m.totalDebtToEquityQuarterly,
+        pe: m.peTTM, peg: m.pegNormalizedAnnual, upside, buyPct,
     });
     renderCompare();
     showToast(`${ticker} added to comparison`);
 }
 
-function removeFromCompare(ticker) {
-    compareList = compareList.filter(c => c.ticker !== ticker);
-    renderCompare();
-}
-function clearCompare() {
-    compareList = [];
-    renderCompare();
-}
+function removeFromCompare(ticker) { compareList = compareList.filter(c => c.ticker !== ticker); renderCompare(); }
+function clearCompare() { compareList = []; renderCompare(); }
 
 function renderCompare() {
     const section = document.getElementById('compareSection');
     document.getElementById('compareCount').textContent = compareList.length;
-
     if (!compareList.length) { section.style.display = 'none'; return; }
     section.style.display = '';
-
-    // Sort by score desc
     const sorted = [...compareList].sort((a,b) => b.score - a.score);
-
     let html = '';
     for (const c of sorted) {
-        const scoreCls = c.score >= 60 ? 'good' : c.score >= 35 ? 'neutral' : 'bad';
+        const sc = c.score >= 60 ? 'good' : c.score >= 35 ? 'neutral' : 'bad';
         html += `<tr>
-            <td>
-                <div class="compare-ticker">${c.ticker}</div>
-                <div class="compare-name" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name}</div>
-            </td>
-            <td><span class="${scoreCls}" style="font-weight:800">${c.score}</span></td>
-            <td>${c.price != null ? '$' + fmtNum(c.price) : '-'}</td>
+            <td><div class="compare-ticker">${c.ticker}</div><div class="compare-name">${c.name}</div></td>
+            <td><span class="${sc}" style="font-weight:800">${c.score}</span></td>
+            <td>${c.price != null ? '$'+fmtNum(c.price) : '-'}</td>
             <td>${c.mcap != null ? fmtBig(c.mcap) : '-'}</td>
-            <td class="${colorHigh(c.roe != null ? c.roe * 100 : null, 15, 5)}">${c.roe != null ? fmtPct(c.roe) : '-'}</td>
-            <td class="${colorHigh(c.revGrow != null ? c.revGrow * 100 : null, 10, 0)}">${c.revGrow != null ? fmtPct(c.revGrow) : '-'}</td>
-            <td class="${colorHigh(c.margin != null ? c.margin * 100 : null, 15, 0)}">${c.margin != null ? fmtPct(c.margin) : '-'}</td>
-            <td class="${colorLow(c.de, 50, 150)}">${c.de != null ? fmtNum(c.de,0) : '-'}</td>
-            <td class="${colorLow(c.pe, 18, 30)}">${c.pe != null ? fmtNum(c.pe,1) : '-'}</td>
-            <td class="${colorLow(c.peg, 1, 2)}">${c.peg != null ? fmtNum(c.peg,2) : '-'}</td>
-            <td class="${colorHigh(c.upside, 15, 0)}">${c.upside != null ? (c.upside >= 0 ? '+' : '') + c.upside.toFixed(1) + '%' : '-'}</td>
+            <td class="${colorHigh(c.roe!=null?c.roe*100:null,15,5)}">${c.roe!=null?fmtPct(c.roe):'-'}</td>
+            <td class="${colorHigh(c.revGrow!=null?c.revGrow*100:null,10,0)}">${c.revGrow!=null?fmtPct(c.revGrow):'-'}</td>
+            <td class="${colorHigh(c.margin!=null?c.margin*100:null,15,0)}">${c.margin!=null?fmtPct(c.margin):'-'}</td>
+            <td class="${colorLow(c.de,50,150)}">${c.de!=null?fmtNum(c.de,0):'-'}</td>
+            <td class="${colorLow(c.pe,18,30)}">${c.pe!=null&&c.pe>0?fmtNum(c.pe,1):'-'}</td>
+            <td class="${colorLow(c.peg,1,2)}">${c.peg!=null&&c.peg>0?fmtNum(c.peg,2):'-'}</td>
+            <td class="${colorHigh(c.upside,15,0)}">${c.upside!=null?(c.upside>=0?'+':'')+c.upside.toFixed(1)+'%':'-'}</td>
             <td><button class="remove-btn" onclick="removeFromCompare('${c.ticker}')">✕</button></td>
         </tr>`;
     }
     document.getElementById('compareBody').innerHTML = html;
 }
 
-// ---- Helpers ----------------------------------------------------------------
+// ============================================================
+// Value Screen
+// ============================================================
+let vsData = [];        // all rows from JSON
+let vsFiltered = [];    // after filters
+let vsSortKey = 'score';
+let vsSortDir = -1;     // -1 = desc, 1 = asc
+
+function vsDragOver(e) { e.preventDefault(); document.getElementById('vsDropZone').classList.add('drag-over'); }
+function vsDragLeave()  { document.getElementById('vsDropZone').classList.remove('drag-over'); }
+function vsDrop(e) {
+    e.preventDefault();
+    vsDragLeave();
+    const file = e.dataTransfer.files[0];
+    if (file) vsParseFile(file);
+}
+function vsLoadFile(e) {
+    const file = e.target.files[0];
+    if (file) vsParseFile(file);
+    e.target.value = '';
+}
+
+function vsParseFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const json = JSON.parse(e.target.result);
+            const rows = json.results || json;
+            if (!Array.isArray(rows) || !rows.length) { showToast('No results found in file'); return; }
+
+            // Pre-compute upside % on every row
+            rows.forEach(r => {
+                r.upside = (r.targetMeanPrice && r.price && r.price > 0)
+                    ? ((r.targetMeanPrice - r.price) / r.price * 100) : null;
+            });
+
+            vsData = rows;
+
+            // Populate sector dropdown
+            const sectors = [...new Set(rows.map(r => r.sector).filter(Boolean))].sort();
+            const sel = document.getElementById('vfSector');
+            sel.innerHTML = '<option value="">All sectors</option>' +
+                sectors.map(s => `<option value="${s}">${s}</option>`).join('');
+
+            // Show scan date
+            if (json.scanned_at) {
+                const d = new Date(json.scanned_at);
+                document.getElementById('vsScanDate').textContent =
+                    'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
+            }
+
+            // Drop zone → show filters
+            document.getElementById('vsDropZone').style.display = 'none';
+            document.getElementById('vsFilters').style.display = '';
+
+            vsApplyFilters();
+            showToast(`Loaded ${rows.length} stocks`);
+        } catch {
+            showToast('Could not read file — make sure it is scan_results.json');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function vsResetFilters() {
+    document.getElementById('vfScore').value = '0';
+    ['vfPeg','vfPe','vfPb','vfUpside','vfRoe','vfRevGrow'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    document.getElementById('vfSector').value = '';
+    vsApplyFilters();
+}
+
+function vsApplyFilters() {
+    const minScore  = parseFloat(document.getElementById('vfScore').value)   || 0;
+    const maxPeg    = parseFloat(document.getElementById('vfPeg').value)      || null;
+    const maxPe     = parseFloat(document.getElementById('vfPe').value)       || null;
+    const maxPb     = parseFloat(document.getElementById('vfPb').value)       || null;
+    const minUpside = parseFloat(document.getElementById('vfUpside').value)   != null && document.getElementById('vfUpside').value !== '' ? parseFloat(document.getElementById('vfUpside').value) : null;
+    const minRoe    = parseFloat(document.getElementById('vfRoe').value)       != null && document.getElementById('vfRoe').value !== '' ? parseFloat(document.getElementById('vfRoe').value) : null;
+    const minRevGrow= parseFloat(document.getElementById('vfRevGrow').value)   != null && document.getElementById('vfRevGrow').value !== '' ? parseFloat(document.getElementById('vfRevGrow').value) : null;
+    const sector    = document.getElementById('vfSector').value;
+
+    vsFiltered = vsData.filter(r => {
+        if (r.score < minScore) return false;
+        if (maxPeg    != null && (r.pegRatio   == null || r.pegRatio   <= 0 || r.pegRatio   > maxPeg))    return false;
+        if (maxPe     != null && (r.forwardPE  == null || r.forwardPE  <= 0 || r.forwardPE  > maxPe))     return false;
+        if (maxPb     != null && (r.priceToBook== null || r.priceToBook<= 0 || r.priceToBook> maxPb))     return false;
+        if (minUpside != null && (r.upside     == null || r.upside     < minUpside))                       return false;
+        if (minRoe    != null && (r.returnOnEquity == null || r.returnOnEquity * 100 < minRoe))            return false;
+        if (minRevGrow!= null && (r.revenueGrowth  == null || r.revenueGrowth  * 100 < minRevGrow))       return false;
+        if (sector && r.sector !== sector) return false;
+        return true;
+    });
+
+    vsRenderTable();
+}
+
+function vsSort(key) {
+    if (vsSortKey === key) vsSortDir *= -1;
+    else { vsSortKey = key; vsSortDir = key === 'ticker' ? 1 : -1; }
+    vsRenderTable();
+}
+
+function vsRenderTable() {
+    // Sort
+    const sorted = [...vsFiltered].sort((a, b) => {
+        let av = a[vsSortKey], bv = b[vsSortKey];
+        if (av == null && bv == null) return 0;
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (typeof av === 'string') return av.localeCompare(bv) * vsSortDir;
+        return (av - bv) * vsSortDir;
+    });
+
+    // Update sort indicators
+    document.querySelectorAll('.vs-table th').forEach(th => {
+        th.classList.remove('sort-asc','sort-desc');
+    });
+    const sortTh = document.getElementById(`vsh-${vsSortKey}`);
+    if (sortTh) sortTh.classList.add(vsSortDir === 1 ? 'sort-asc' : 'sort-desc');
+
+    document.getElementById('vsCount').textContent = `${sorted.length} stock${sorted.length!==1?'s':''}`;
+
+    if (!sorted.length) {
+        document.getElementById('vsBody').innerHTML =
+            '<tr><td colspan="13" style="text-align:center;color:#667;padding:24px">No stocks match these filters</td></tr>';
+        document.getElementById('vsResults').style.display = '';
+        return;
+    }
+
+    let html = '';
+    for (const r of sorted) {
+        const sc = r.score >= 60 ? 'high' : r.score >= 35 ? 'med' : 'low';
+        const upside = r.upside;
+        const roe    = r.returnOnEquity != null ? r.returnOnEquity * 100 : null;
+        const rg     = r.revenueGrowth  != null ? r.revenueGrowth  * 100 : null;
+
+        html += `<tr onclick="vsLookup('${r.ticker}')">
+            <td><span class="score-pill ${sc}">${r.score}</span></td>
+            <td class="vs-ticker">${r.ticker}</td>
+            <td class="vs-name">${r.name || '-'}</td>
+            <td style="font-size:0.8em;color:#8892b0">${r.sector || '-'}</td>
+            <td>${r.price != null ? '$'+fmtNum(r.price) : '-'}</td>
+            <td>${r.marketCap != null ? fmtBig(r.marketCap) : '-'}</td>
+            <td class="${r.pegRatio && r.pegRatio > 0 ? colorLow(r.pegRatio,1,2) : 'muted'}">${r.pegRatio && r.pegRatio > 0 ? fmtNum(r.pegRatio,2) : '-'}</td>
+            <td class="${r.forwardPE && r.forwardPE > 0 ? colorLow(r.forwardPE,15,30) : 'muted'}">${r.forwardPE && r.forwardPE > 0 ? fmtNum(r.forwardPE,1) : '-'}</td>
+            <td class="${r.priceToBook != null ? colorLow(r.priceToBook,3,8) : 'muted'}">${r.priceToBook != null ? fmtNum(r.priceToBook,2) : '-'}</td>
+            <td class="${colorHigh(upside,15,0)}">${upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : '-'}</td>
+            <td class="${colorHigh(roe,15,5)}">${roe != null ? fmtPct(roe/100) : '-'}</td>
+            <td class="${colorHigh(rg,10,0)}">${rg != null ? fmtPct(rg/100) : '-'}</td>
+            <td class="${r.debtToEquity != null ? colorLow(r.debtToEquity,50,150) : 'muted'}">${r.debtToEquity != null ? fmtNum(r.debtToEquity,0) : '-'}</td>
+        </tr>`;
+    }
+    document.getElementById('vsBody').innerHTML = html;
+    document.getElementById('vsResults').style.display = '';
+}
+
+function vsLookup(ticker) {
+    switchTab('lookup');
+    document.getElementById('tickerInput').value = ticker;
+    search();
+}
+
+function vsExport() {
+    if (!vsFiltered.length) return;
+    const fields = ['score','ticker','name','sector','price','marketCap','pegRatio','forwardPE',
+        'priceToBook','upside','returnOnEquity','revenueGrowth','debtToEquity',
+        'trailingPE','currentRatio','profitMargins','dividendYield','beta'];
+    const header = fields.join(',');
+    const rows = vsFiltered.map(r =>
+        fields.map(f => {
+            const v = r[f];
+            if (v == null) return '';
+            if (typeof v === 'string' && v.includes(',')) return `"${v}"`;
+            return v;
+        }).join(',')
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'value_screen.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// Helpers
+// ============================================================
 function fmtNum(v, dec=2) {
     if (v == null || isNaN(v)) return '-';
     return Number(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
@@ -839,10 +1148,10 @@ function fmtPct(v) {
 }
 function fmtBig(v) {
     if (!v) return '-';
-    if (v >= 1e12) return '$' + (v/1e12).toFixed(1) + 'T';
-    if (v >= 1e9)  return '$' + (v/1e9).toFixed(1) + 'B';
-    if (v >= 1e6)  return '$' + (v/1e6).toFixed(0) + 'M';
-    return '$' + fmtNum(v, 0);
+    if (v >= 1e12) return '$'+(v/1e12).toFixed(1)+'T';
+    if (v >= 1e9)  return '$'+(v/1e9).toFixed(1)+'B';
+    if (v >= 1e6)  return '$'+(v/1e6).toFixed(0)+'M';
+    return '$'+fmtNum(v,0);
 }
 function colorHigh(v, goodAbove, badBelow) {
     if (v == null) return 'muted';
@@ -853,18 +1162,18 @@ function colorLow(v, goodBelow, badAbove) {
     return v < goodBelow ? 'good' : v > badAbove ? 'bad' : 'neutral';
 }
 function dateStr(offsetDays) {
-    const d = new Date();
-    d.setDate(d.getDate() + offsetDays);
+    const d = new Date(); d.setDate(d.getDate() + offsetDays);
     return d.toISOString().split('T')[0];
 }
 function showToast(msg, duration = 2500) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), duration);
 }
 
-// ---- Init -------------------------------------------------------------------
+// ============================================================
+// Init
+// ============================================================
 (function() {
     if (!getKey()) {
         document.getElementById('noKeyState').style.display = '';

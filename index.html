@@ -576,7 +576,7 @@ async function search() {
         const scoreResult = scoreStock(m, q, r, pt);
         currentData = { ticker, profile: p, quote: q, metrics: m, recs: r, priceTarget: pt, scoreResult };
 
-        renderOverview(ticker, p, q, scoreResult);
+        renderOverview(ticker, p, q, pt, scoreResult);
         renderScoreBreakdown(scoreResult);
         renderMetrics(m, q, r, pt);
         renderNews(ticker, p.name || '', n);
@@ -593,7 +593,7 @@ async function search() {
 }
 
 // ---- Render overview --------------------------------------------------------
-function renderOverview(ticker, p, q, scoreResult) {
+function renderOverview(ticker, p, q, pt, scoreResult) {
     const score = scoreResult.total;
     const cls = score >= 60 ? 'score-high' : score >= 35 ? 'score-med' : 'score-low';
     const mcap = fmtBig(p.marketCapitalization ? p.marketCapitalization * 1e6 : null);

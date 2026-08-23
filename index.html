@@ -401,31 +401,32 @@
     <!-- ========================================================= -->
     <div id="pane-value" style="display:none">
 
-        <!-- Drop zone -->
-        <div style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.15);border-radius:12px;padding:16px;margin-bottom:14px">
-            <div style="font-size:0.78em;color:#8892b0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">How to use the Value Screen</div>
-            <div style="display:flex;flex-direction:column;gap:8px">
-                <div style="display:flex;gap:10px;align-items:flex-start">
-                    <span style="background:rgba(255,193,7,0.2);color:#ffc107;font-weight:800;font-size:0.78em;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:1px">1</span>
-                    <span style="font-size:0.85em">Double-click <strong style="color:#fff">Run Scan.bat</strong> on your Desktop — scans S&amp;P 500 + S&amp;P 400 + NASDAQ 100 (~900 stocks) and saves the results file to your Desktop (takes ~3–4 minutes)</span>
+        <!-- Auto-fetch status bar -->
+        <div class="card" id="vsFetchBar" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <div>
+                    <span id="vsFetchStatus" style="font-size:0.88em;color:#e0e0e0"></span>
+                    <span id="vsFetchDate" style="font-size:0.75em;color:#556;margin-left:10px"></span>
                 </div>
-                <div style="display:flex;gap:10px;align-items:flex-start">
-                    <span style="background:rgba(255,193,7,0.2);color:#ffc107;font-weight:800;font-size:0.78em;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:1px">2</span>
-                    <span style="font-size:0.85em">Drag <strong style="color:#fff">scan_results.json</strong> from your Desktop onto the box below</span>
-                </div>
-                <div style="display:flex;gap:10px;align-items:flex-start">
-                    <span style="background:rgba(255,193,7,0.2);color:#ffc107;font-weight:800;font-size:0.78em;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:1px">3</span>
-                    <span style="font-size:0.85em">Use the filters to find underpriced stocks — then click any row to look it up in detail</span>
-                </div>
+                <button class="btn-value btn-sm" onclick="vsFetchFromGitHub(true)">↻ Refresh</button>
             </div>
         </div>
 
-        <div class="vs-drop-zone" id="vsDropZone" onclick="document.getElementById('vsFileInput').click()"
-             ondragover="vsDragOver(event)" ondragleave="vsDragLeave(event)" ondrop="vsDrop(event)">
-            <div style="font-size:2em">📂</div>
-            <p>Click or drag <em>scan_results.json</em> here</p>
+        <!-- Loading state -->
+        <div id="vsFetching" style="display:none" class="card">
+            <div class="loading"><div class="spinner"></div>Loading latest scan from GitHub…</div>
         </div>
-        <input type="file" id="vsFileInput" accept=".json" onchange="vsLoadFile(event)">
+
+        <!-- Manual upload fallback -->
+        <div id="vsManualSection">
+            <div class="vs-drop-zone" id="vsDropZone" onclick="document.getElementById('vsFileInput').click()"
+                 ondragover="vsDragOver(event)" ondragleave="vsDragLeave(event)" ondrop="vsDrop(event)">
+                <div style="font-size:2em">📂</div>
+                <p>Loading scan data from GitHub…</p>
+                <p style="font-size:0.78em;margin-top:6px;color:#556">Or click to load <em>scan_results.json</em> manually</p>
+            </div>
+            <input type="file" id="vsFileInput" accept=".json" onchange="vsLoadFile(event)">
+        </div>
 
         <!-- Filters (hidden until data loaded) -->
         <div id="vsFilters" style="display:none" class="card">
@@ -538,6 +539,37 @@ function switchTab(tab) {
     document.getElementById('pane-value').style.display  = tab === 'value'  ? '' : 'none';
     document.getElementById('tab-lookup').classList.toggle('active', tab === 'lookup');
     document.getElementById('tab-value').classList.toggle('active',  tab === 'value');
+    if (tab === 'value' && !vsData.length) vsFetchFromGitHub(false);
+}
+
+// ============================================================
+// Auto-fetch scan results from GitHub
+// ============================================================
+const SCAN_URL = 'https://raw.githubusercontent.com/meganwood321/hatch-research/main/scan_results.json';
+let vsFetched = false;
+
+async function vsFetchFromGitHub(forceRefresh) {
+    if (vsFetched && !forceRefresh) return;
+    document.getElementById('vsFetching').style.display = '';
+    document.getElementById('vsManualSection').style.display = 'none';
+    document.getElementById('vsFetchBar').style.display = 'none';
+    try {
+        const resp = await fetch(SCAN_URL + '?t=' + Date.now());
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+        vsIngestData(json);
+        vsFetched = true;
+        document.getElementById('vsFetchBar').style.display = '';
+        document.getElementById('vsFetchStatus').textContent = `✓ ${vsData.length} stocks loaded from GitHub`;
+    } catch (e) {
+        // GitHub fetch failed — show manual upload
+        document.getElementById('vsDropZone').querySelector('p').textContent = 'Could not load from GitHub — drop scan_results.json here instead';
+        document.getElementById('vsManualSection').style.display = '';
+        document.getElementById('vsFetchBar').style.display = '';
+        document.getElementById('vsFetchStatus').textContent = '⚠ Auto-load failed — using manual upload';
+    } finally {
+        document.getElementById('vsFetching').style.display = 'none';
+    }
 }
 
 // ============================================================
@@ -1005,47 +1037,54 @@ function vsLoadFile(e) {
     e.target.value = '';
 }
 
+function vsIngestData(json) {
+    const rows = json.results || json;
+    if (!Array.isArray(rows) || !rows.length) throw new Error('No results in data');
+
+    rows.forEach(r => {
+        r.upside = (r.targetMeanPrice && r.price && r.price > 0)
+            ? ((r.targetMeanPrice - r.price) / r.price * 100) : null;
+    });
+
+    vsData = rows;
+
+    // Cache scores for Lookup tab
+    const scanMap = {};
+    rows.forEach(r => { if (r.ticker) scanMap[r.ticker] = r.score; });
+    try { localStorage.setItem('hatch_scan_scores', JSON.stringify(scanMap)); } catch {}
+
+    // Populate sector dropdown
+    const sectors = [...new Set(rows.map(r => r.sector).filter(Boolean))].sort();
+    const sel = document.getElementById('vfSector');
+    sel.innerHTML = '<option value="">All sectors</option>' +
+        sectors.map(s => `<option value="${s}">${s}</option>`).join('');
+
+    // Show scan date
+    if (json.scanned_at) {
+        const d = new Date(json.scanned_at);
+        document.getElementById('vsScanDate').textContent =
+            'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
+        document.getElementById('vsFetchDate').textContent =
+            'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    document.getElementById('vsManualSection').style.display = 'none';
+    document.getElementById('vsFilters').style.display = '';
+
+    vsRestoreFilters();
+    vsApplyFilters();
+}
+
 function vsParseFile(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
         try {
             const json = JSON.parse(e.target.result);
-            const rows = json.results || json;
-            if (!Array.isArray(rows) || !rows.length) { showToast('No results found in file'); return; }
-
-            // Pre-compute upside % on every row
-            rows.forEach(r => {
-                r.upside = (r.targetMeanPrice && r.price && r.price > 0)
-                    ? ((r.targetMeanPrice - r.price) / r.price * 100) : null;
-            });
-
-            vsData = rows;
-
-            // Cache scan scores in localStorage for use by the Lookup tab
-            const scanMap = {};
-            rows.forEach(r => { if (r.ticker) scanMap[r.ticker] = r.score; });
-            try { localStorage.setItem('hatch_scan_scores', JSON.stringify(scanMap)); } catch {}
-
-            // Populate sector dropdown
-            const sectors = [...new Set(rows.map(r => r.sector).filter(Boolean))].sort();
-            const sel = document.getElementById('vfSector');
-            sel.innerHTML = '<option value="">All sectors</option>' +
-                sectors.map(s => `<option value="${s}">${s}</option>`).join('');
-
-            // Show scan date
-            if (json.scanned_at) {
-                const d = new Date(json.scanned_at);
-                document.getElementById('vsScanDate').textContent =
-                    'Scanned ' + d.toLocaleDateString('en-NZ', { day:'numeric', month:'short', year:'numeric' });
-            }
-
-            // Drop zone → show filters
-            document.getElementById('vsDropZone').style.display = 'none';
-            document.getElementById('vsFilters').style.display = '';
-
-            vsRestoreFilters();
-            vsApplyFilters();
-            showToast(`Loaded ${rows.length} stocks`);
+            vsIngestData(json);
+            vsFetched = true;
+            document.getElementById('vsFetchBar').style.display = '';
+            document.getElementById('vsFetchStatus').textContent = `✓ ${vsData.length} stocks loaded from file`;
+            showToast(`Loaded ${vsData.length} stocks`);
         } catch {
             showToast('Could not read file — make sure it is scan_results.json');
         }

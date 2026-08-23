@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Hatch Research">
+    <meta name="apple-mobile-web-app-title" content="Stock Research">
     <link rel="apple-touch-icon" href="apple-touch-icon.svg">
-    <title>Hatch Research</title>
+    <title>Stock Research</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -212,8 +212,11 @@
 
         .vs-filters {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px; margin-bottom: 14px;
+        }
+        @media (min-width: 500px) {
+            .vs-filters { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
         }
         .vs-filter { display: flex; flex-direction: column; gap: 4px; }
         .vs-filter label { font-size: 0.72em; color: #8892b0; text-transform: uppercase; letter-spacing: 0.4px; }
@@ -309,11 +312,10 @@
 <div class="container">
     <header>
         <div class="header-brand">
-            <h1>Hatch Research</h1>
-            <p>Stock research · NASDAQ &amp; NYSE</p>
+            <h1>Stock Research <span style="font-size:0.52em;font-weight:400;color:#8892b0;letter-spacing:0;vertical-align:middle">· NASDAQ &amp; NYSE</span></h1>
         </div>
         <div class="header-actions">
-            <button class="btn-secondary btn-sm" onclick="showKeyModal()">API Key</button>
+            <button class="btn-secondary" style="padding:5px 10px;font-size:0.72em" onclick="showKeyModal()">API Key</button>
         </div>
     </header>
 
@@ -403,24 +405,6 @@
     <!-- TAB: VALUE SCREEN                                          -->
     <!-- ========================================================= -->
     <div id="pane-value">
-
-        <!-- About this screen -->
-        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:0.72em;color:#8892b0;line-height:1.5">
-            <span style="color:#ccd;font-weight:700">How this works</span> &nbsp;·&nbsp;
-            Scans ~900 stocks (S&amp;P 500, S&amp;P 400, NASDAQ 100) automatically every weekday morning (7am NZT) using Yahoo Finance data.
-            &nbsp;·&nbsp; <a href="https://github.com/meganwood321/hatch-research/actions" target="_blank" style="color:#5dade2">View scan history on GitHub</a>
-        </div>
-
-        <!-- Status bar (shown after load) -->
-        <div class="card" id="vsFetchBar" style="display:none">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-                <div>
-                    <span id="vsFetchStatus" style="font-size:0.88em;color:#e0e0e0"></span>
-                    <span id="vsFetchDate" style="font-size:0.75em;color:#556;margin-left:10px"></span>
-                </div>
-                <button class="btn-value btn-sm" onclick="vsFetchFromGitHub(true)">↻ Refresh</button>
-            </div>
-        </div>
 
         <!-- Staleness warning (shown when data is unexpectedly old) -->
         <div id="vsStaleWarning" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:12px;font-size:0.82em;line-height:1.6">
@@ -543,6 +527,24 @@
                     <tbody id="vsBody"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Status bar (shown after load) -->
+        <div class="card" id="vsFetchBar" style="display:none;margin-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <div>
+                    <span id="vsFetchStatus" style="font-size:0.88em;color:#e0e0e0"></span>
+                    <span id="vsFetchDate" style="font-size:0.75em;color:#556;margin-left:10px"></span>
+                </div>
+                <button class="btn-value btn-sm" onclick="vsFetchFromGitHub(true)">↻ Refresh</button>
+            </div>
+        </div>
+
+        <!-- About this screen -->
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;margin-top:14px;font-size:0.72em;color:#8892b0;line-height:1.5">
+            <span style="color:#ccd;font-weight:700">How this works</span> &nbsp;·&nbsp;
+            Scans ~900 stocks (S&amp;P 500, S&amp;P 400, NASDAQ 100) automatically every weekday morning (7am NZT) using Yahoo Finance data.
+            &nbsp;·&nbsp; <a href="https://github.com/meganwood321/hatch-research/actions" target="_blank" style="color:#5dade2">View scan history on GitHub</a>
         </div>
 
     </div><!-- /pane-value -->

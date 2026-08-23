@@ -225,6 +225,8 @@
         .vs-filter input:focus, .vs-filter select:focus { outline: none; border-color: #ffc107; }
         .vs-filter select option { background: #1a1a2e; }
         .vf-hint { font-size: 0.68em; color: #556; line-height: 1.3; margin-top: 1px; }
+        .vs-table .col-biz-start { border-left: 1px solid rgba(93,173,226,0.25); }
+        .vs-table .col-val-start { border-left: 1px solid rgba(240,180,41,0.25); }
 
         .vs-results-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -528,15 +530,15 @@
                         <th onclick="vsSort('ticker')"      id="vsh-ticker">Ticker</th>
                         <th>Name</th>
                         <th>Sector</th>
-                        <th onclick="vsSort('price')"       id="vsh-price">Price</th>
-                        <th onclick="vsSort('marketCap')"   id="vsh-marketCap">Mkt Cap</th>
-                        <th onclick="vsSort('pegRatio')"    id="vsh-pegRatio">PEG</th>
-                        <th onclick="vsSort('forwardPE')"   id="vsh-forwardPE">Fwd P/E</th>
-                        <th onclick="vsSort('priceToBook')" id="vsh-priceToBook">P/B</th>
-                        <th onclick="vsSort('upside')"      id="vsh-upside">Upside</th>
-                        <th onclick="vsSort('returnOnEquity')" id="vsh-returnOnEquity">ROE</th>
-                        <th onclick="vsSort('revenueGrowth')" id="vsh-revenueGrowth">Rev Growth</th>
-                        <th onclick="vsSort('debtToEquity')"  id="vsh-debtToEquity">D/E</th>
+                        <th onclick="vsSort('price')"          id="vsh-price">Price</th>
+                        <th onclick="vsSort('marketCap')"      id="vsh-marketCap">Mkt Cap</th>
+                        <th class="col-group-biz col-biz-start" onclick="vsSort('returnOnEquity')"  id="vsh-returnOnEquity">ROE</th>
+                        <th class="col-group-biz" onclick="vsSort('revenueGrowth')"   id="vsh-revenueGrowth">Rev Growth</th>
+                        <th class="col-group-biz" onclick="vsSort('debtToEquity')"    id="vsh-debtToEquity">D/E</th>
+                        <th class="col-group-val col-val-start" onclick="vsSort('pegRatio')"        id="vsh-pegRatio">PEG</th>
+                        <th class="col-group-val" onclick="vsSort('forwardPE')"       id="vsh-forwardPE">Fwd P/E</th>
+                        <th class="col-group-val" onclick="vsSort('priceToBook')"     id="vsh-priceToBook">P/B</th>
+                        <th class="col-group-val" onclick="vsSort('upside')"          id="vsh-upside">Upside</th>
                     </tr></thead>
                     <tbody id="vsBody"></tbody>
                 </table>
@@ -1238,13 +1240,13 @@ function vsRenderTable() {
             <td style="font-size:0.8em;color:#8892b0">${r.sector || '-'}</td>
             <td>${r.price != null ? '$'+fmtNum(r.price) : '-'}</td>
             <td>${r.marketCap != null ? fmtBig(r.marketCap) : '-'}</td>
-            <td class="${r.pegRatio && r.pegRatio > 0 ? colorLow(r.pegRatio,1,2) : 'muted'}">${r.pegRatio && r.pegRatio > 0 ? fmtNum(r.pegRatio,2) : '-'}</td>
-            <td class="${r.forwardPE && r.forwardPE > 0 ? colorLow(r.forwardPE,15,30) : 'muted'}">${r.forwardPE && r.forwardPE > 0 ? fmtNum(r.forwardPE,1) : '-'}</td>
-            <td class="${r.priceToBook != null ? colorLow(r.priceToBook,3,8) : 'muted'}">${r.priceToBook != null ? fmtNum(r.priceToBook,2) : '-'}</td>
-            <td class="${colorHigh(upside,15,0)}">${upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : '-'}</td>
-            <td class="${colorHigh(roe,15,5)}">${roe != null ? fmtPct(roe/100) : '-'}</td>
-            <td class="${colorHigh(rg,10,0)}">${rg != null ? fmtPct(rg/100) : '-'}</td>
-            <td class="${r.debtToEquity != null ? colorLow(r.debtToEquity,50,150) : 'muted'}">${r.debtToEquity != null ? fmtNum(r.debtToEquity,0) : '-'}</td>
+            <td class="col-group-biz col-biz-start ${colorHigh(roe,15,5)}">${roe != null ? fmtPct(roe/100) : '-'}</td>
+            <td class="col-group-biz ${colorHigh(rg,10,0)}">${rg != null ? fmtPct(rg/100) : '-'}</td>
+            <td class="col-group-biz ${r.debtToEquity != null ? colorLow(r.debtToEquity,50,150) : 'muted'}">${r.debtToEquity != null ? fmtNum(r.debtToEquity,0) : '-'}</td>
+            <td class="col-group-val col-val-start ${r.pegRatio && r.pegRatio > 0 ? colorLow(r.pegRatio,1,2) : 'muted'}">${r.pegRatio && r.pegRatio > 0 ? fmtNum(r.pegRatio,2) : '-'}</td>
+            <td class="col-group-val ${r.forwardPE && r.forwardPE > 0 ? colorLow(r.forwardPE,15,30) : 'muted'}">${r.forwardPE && r.forwardPE > 0 ? fmtNum(r.forwardPE,1) : '-'}</td>
+            <td class="col-group-val ${r.priceToBook != null ? colorLow(r.priceToBook,3,8) : 'muted'}">${r.priceToBook != null ? fmtNum(r.priceToBook,2) : '-'}</td>
+            <td class="col-group-val ${colorHigh(upside,15,0)}">${upside != null ? (upside>=0?'+':'')+upside.toFixed(1)+'%' : '-'}</td>
         </tr>`;
     }
     document.getElementById('vsBody').innerHTML = html;

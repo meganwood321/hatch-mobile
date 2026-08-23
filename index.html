@@ -789,7 +789,13 @@ function renderOverview(ticker, p, q, pt, scoreResult, scanScore) {
         ? `<div style="font-size:0.65em;color:rgba(255,255,255,0.45);margin-top:2px">from scan</div>`
         : `<div style="font-size:0.65em;color:rgba(255,255,255,0.3);margin-top:2px">live est.</div>`;
 
+    const liveWarning = scanScore == null ? `
+        <div style="margin-bottom:12px;padding:10px 12px;background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.25);border-radius:8px;font-size:0.78em;color:#ffc107;line-height:1.5">
+            ⚠️ <strong>${ticker} was not in your last scan</strong> — this score is a live estimate from Finnhub and may be understated (PEG and forward P/E are often missing). Run the scanner to get a comparable score.
+        </div>` : '';
+
     document.getElementById('overviewCard').innerHTML = `
+        ${liveWarning}
         <div class="score-hero">
             <div class="score-circle ${cls}" style="flex-direction:column">
                 <span class="num">${displayScore}</span>
@@ -1037,6 +1043,7 @@ function vsParseFile(file) {
             document.getElementById('vsDropZone').style.display = 'none';
             document.getElementById('vsFilters').style.display = '';
 
+            vsRestoreFilters();
             vsApplyFilters();
             showToast(`Loaded ${rows.length} stocks`);
         } catch {
@@ -1046,16 +1053,35 @@ function vsParseFile(file) {
     reader.readAsText(file);
 }
 
+const VS_FILTER_IDS = ['vfScore','vfPeg','vfPe','vfPb','vfUpside','vfRoe','vfRevGrow','vfSector'];
+
+function vsSaveFilters() {
+    const vals = {};
+    VS_FILTER_IDS.forEach(id => { vals[id] = document.getElementById(id).value; });
+    try { localStorage.setItem('hatch_vs_filters', JSON.stringify(vals)); } catch {}
+}
+
+function vsRestoreFilters() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('hatch_vs_filters') || '{}');
+        VS_FILTER_IDS.forEach(id => {
+            if (saved[id] != null) document.getElementById(id).value = saved[id];
+        });
+    } catch {}
+}
+
 function vsResetFilters() {
     document.getElementById('vfScore').value = '0';
     ['vfPeg','vfPe','vfPb','vfUpside','vfRoe','vfRevGrow'].forEach(id => {
         document.getElementById(id).value = '';
     });
     document.getElementById('vfSector').value = '';
+    vsSaveFilters();
     vsApplyFilters();
 }
 
 function vsApplyFilters() {
+    vsSaveFilters();
     const minScore  = parseFloat(document.getElementById('vfScore').value)   || 0;
     const maxPeg    = parseFloat(document.getElementById('vfPeg').value)      || null;
     const maxPe     = parseFloat(document.getElementById('vfPe').value)       || null;

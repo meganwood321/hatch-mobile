@@ -340,10 +340,6 @@
             <div class="history-row" id="historyRow"></div>
         </div>
 
-        <div style="font-size:0.75em;color:#556;margin-bottom:10px;padding:0 4px">
-            Score uses Finnhub data · may differ from Value Screen (which uses yfinance). Value Screen is more reliable for PEG &amp; forward P/E.
-        </div>
-
         <div id="noKeyState" style="display:none" class="card">
             <div class="empty">
                 <p>Set your free Finnhub API key to get started.</p><br>
@@ -406,10 +402,6 @@
     <div id="pane-value" style="display:none">
 
         <!-- Drop zone -->
-        <div style="font-size:0.75em;color:#556;margin-bottom:10px;padding:0 4px">
-            Scores here use yfinance data and are more reliable for valuation metrics (PEG, forward P/E) than the Stock Lookup tab.
-        </div>
-
         <div style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.15);border-radius:12px;padding:16px;margin-bottom:14px">
             <div style="font-size:0.78em;color:#8892b0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">How to use the Value Screen</div>
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -762,9 +754,17 @@ async function search() {
         }
 
         const scoreResult = scoreStock(m, q, r, pt);
-        currentData = { ticker, profile: p, quote: q, metrics: m, recs: r, priceTarget: pt, scoreResult };
 
-        renderOverview(ticker, p, q, pt, scoreResult);
+        // Prefer yfinance score from last scan (more reliable for valuation metrics)
+        let scanScore = null;
+        try {
+            const scanMap = JSON.parse(localStorage.getItem('hatch_scan_scores') || '{}');
+            if (scanMap[ticker] != null) scanScore = scanMap[ticker];
+        } catch {}
+
+        currentData = { ticker, profile: p, quote: q, metrics: m, recs: r, priceTarget: pt, scoreResult, scanScore };
+
+        renderOverview(ticker, p, q, pt, scoreResult, scanScore);
         renderScoreBreakdown(scoreResult);
         renderMetrics(m, q, r, pt);
         renderNews(ticker, p.name || '', n);
@@ -779,18 +779,22 @@ async function search() {
     }
 }
 
-function renderOverview(ticker, p, q, pt, scoreResult) {
-    const score = scoreResult.total;
-    const cls = score >= 60 ? 'score-high' : score >= 35 ? 'score-med' : 'score-low';
+function renderOverview(ticker, p, q, pt, scoreResult, scanScore) {
+    const displayScore = scanScore != null ? scanScore : scoreResult.total;
+    const cls = displayScore >= 60 ? 'score-high' : displayScore >= 35 ? 'score-med' : 'score-low';
     const mcap = fmtBig(p.marketCapitalization ? p.marketCapitalization * 1e6 : null);
     const change = q.dp != null ? (q.dp >= 0 ? '+' : '') + q.dp.toFixed(2) + '%' : '';
     const changeColor = q.dp >= 0 ? '#2ecc71' : '#ff6b6b';
+    const scoreLabel = scanScore != null
+        ? `<div style="font-size:0.65em;color:rgba(255,255,255,0.45);margin-top:2px">from scan</div>`
+        : `<div style="font-size:0.65em;color:rgba(255,255,255,0.3);margin-top:2px">live est.</div>`;
 
     document.getElementById('overviewCard').innerHTML = `
         <div class="score-hero">
-            <div class="score-circle ${cls}">
-                <span class="num">${score}</span>
+            <div class="score-circle ${cls}" style="flex-direction:column">
+                <span class="num">${displayScore}</span>
                 <span class="out">/100</span>
+                ${scoreLabel}
             </div>
             <div class="stock-header">
                 <div class="stock-ticker">${ticker}</div>
@@ -1010,6 +1014,11 @@ function vsParseFile(file) {
             });
 
             vsData = rows;
+
+            // Cache scan scores in localStorage for use by the Lookup tab
+            const scanMap = {};
+            rows.forEach(r => { if (r.ticker) scanMap[r.ticker] = r.score; });
+            try { localStorage.setItem('hatch_scan_scores', JSON.stringify(scanMap)); } catch {}
 
             // Populate sector dropdown
             const sectors = [...new Set(rows.map(r => r.sector).filter(Boolean))].sort();
